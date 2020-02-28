@@ -1,0 +1,15 @@
+server:
+  port: 8058
+spring:
+  application:
+    name: ttt
+  #默认环境dev
+  profiles:
+    active: dev
+  cloud:
+    #配置中心
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8048
+        group: ${spring.application.name}
+        file-extension: yml
