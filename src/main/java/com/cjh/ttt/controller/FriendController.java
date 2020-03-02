@@ -49,7 +49,7 @@ public class FriendController {
      * @param id 主键
      * @return 单条数据
      */
-    @GetMapping("/{id}")
+    @GetMapping("/info/{id}")
     public R selectOne(@PathVariable Serializable id) {
         return R.ok(friendService.getById(id));
     }

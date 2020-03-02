@@ -50,7 +50,6 @@ public class UserController {
      */
     @PostMapping("/logout")
     public R logout() {
-        log.info("111111111111");
         userService.logout();
         return R.ok("退出成功");
     }
@@ -73,7 +72,7 @@ public class UserController {
      * @param id 主键
      * @return 单条数据
      */
-    @GetMapping("/{id}")
+    @GetMapping("/info/{id}")
     public R selectOne(@PathVariable Serializable id) {
         return R.ok(this.userService.getById(id));
     }
