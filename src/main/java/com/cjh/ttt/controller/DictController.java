@@ -38,7 +38,7 @@ public class DictController {
      * @param dict 查询实体
      * @return 所有数据
      */
-    @GetMapping("/page")
+    @GetMapping("/getListByType")
     public R selectAll(Page<Dict> page, Dict dict) {
         return R.ok(dictService.page(page, new QueryWrapper<>(dict)));
     }
@@ -46,12 +46,13 @@ public class DictController {
     /**
      * 通过主键查询单条数据
      *
-     * @param id 主键
+     * @param type 字典类型
+     * @param key 字典key
      * @return 单条数据
      */
-    @GetMapping("/info/{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return R.ok(dictService.getById(id));
+    @GetMapping("/getValueByTypeAndKey")
+    public R getValueByTypeAndKey(@RequestParam String type, @RequestParam Integer key) {
+        return R.ok(dictService.getValueByTypeAndKey(type, key));
     }
 
     /**

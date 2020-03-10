@@ -1,8 +1,11 @@
 package com.cjh.ttt.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.cjh.ttt.dto.DictDto;
 import com.cjh.ttt.entity.Dict;
+import java.io.Serializable;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * (Dict)表数据库访问层
@@ -10,7 +13,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @author cjh
  * @since 2020-02-27 15:16:41
  */
-@Mapper 
+@Mapper
 public interface DictDao extends BaseMapper<Dict> {
 
     /**
@@ -21,4 +24,8 @@ public interface DictDao extends BaseMapper<Dict> {
      */
     int deleteById(Integer id);
 
+    /**
+     * 根据type + key 查找 value
+     */
+    DictDto getValueByTypeAndKey(@Param("type") String type, @Param("key") Integer key);
 }

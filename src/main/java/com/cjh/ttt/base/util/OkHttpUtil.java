@@ -1,5 +1,6 @@
 package com.cjh.ttt.base.util;
 
+import java.io.InputStream;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.FormBody;
@@ -24,12 +25,12 @@ public class OkHttpUtil {
     /**
      * GET
      *
-     * @param url     请求的url
-     * @param queries 请求的参数，在浏览器？后面的数据，没有可以传null
+     * @param url    请求的url
+     * @param params 请求的参数，在浏览器？后面的数据，没有可以传null
      * @return String
      */
-    public static String get(String url, Map<String, String> queries) {
-        return get(url, null, queries);
+    public static String get(String url, Map<String, String> params) {
+        return get(url, null, params);
     }
 
     /**
@@ -43,7 +44,7 @@ public class OkHttpUtil {
     public static String get(String url, Map<String, String> header, Map<String, String> queries) {
         StringBuffer sb = new StringBuffer(url);
         if (queries != null && queries.keySet().size() > 0) {
-            sb.append("?clientId=qingzu");
+            sb.append("?");
             queries.forEach((k, v) -> sb.append("&").append(k).append("=").append(v));
         }
 
@@ -77,7 +78,7 @@ public class OkHttpUtil {
      * @return String
      */
     public static String post(String url, Map<String, String> header, Map<String, String> params) {
-        FormBody.Builder formBuilder = new FormBody.Builder().add("clientId", "qingzu");
+        FormBody.Builder formBuilder = new FormBody.Builder();
         //添加参数
         if (params != null && params.keySet().size() > 0) {
             params.forEach(formBuilder::add);
@@ -103,6 +104,33 @@ public class OkHttpUtil {
     public static String postJson(String url, String json) {
         return postJson(url, null, json);
     }
+
+    /**
+     * POST请求发送JSON数据，返回流
+     *
+     * @param url  请求的url
+     * @param json 请求的json串
+     * @return String
+     */
+    public static InputStream postJsonReturnIO(String url, String json) {
+        RequestBody requestBody = RequestBody.create(JSON, json);
+        Request.Builder builder = new Request.Builder();
+        Request request = builder.url(url).post(requestBody).build();
+        Response response = null;
+        try {
+            OkHttpClient okHttpClient = new OkHttpClient();
+            response = okHttpClient.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return response.body().byteStream();
+            } else {
+                throw new Exception(response.toString());
+            }
+        } catch (Exception e) {
+            log.error("okhttp3 post error >> ex = {}", e.getMessage());
+        }
+        return null;
+    }
+
 
     /**
      * POST请求发送JSON数据
@@ -173,6 +201,8 @@ public class OkHttpUtil {
             response = okHttpClient.newCall(request).execute();
             if (response.isSuccessful()) {
                 return response.body().string();
+            } else {
+                throw new Exception(response.toString());
             }
         } catch (Exception e) {
             log.error("okhttp3 post error >> ex = {}", e.getMessage());

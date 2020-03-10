@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cjh.ttt.dto.TokenDto;
 import com.cjh.ttt.entity.User;
+import com.cjh.ttt.request.LoginReq;
 import com.cjh.ttt.service.UserService;
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
@@ -33,14 +34,14 @@ public class UserController {
     private UserService userService;
 
     /**
-     * 登录
+     * 授权登录
      *
-     * @param user 实体
+     * @param loginReq 实体
      * @return token
      */
     @PostMapping("/login")
-    public R login(@RequestBody User user) {
-        TokenDto tokenDto = userService.login(user.getUsername());
+    public R login(@RequestBody LoginReq loginReq) {
+        TokenDto tokenDto = userService.login(loginReq.getCode());
         return R.ok(tokenDto);
     }
 

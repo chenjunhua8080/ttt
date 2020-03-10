@@ -9,4 +9,11 @@
     where id = #{id}
   </delete>
 
+  <select id="getValueByTypeAndKey" resultType="com.cjh.ttt.dto.DictDto">
+    select type,dict_key,dict_value from dict
+    where data_level = 1
+    and type = #{type}
+    and dict_key = #{key}
+  </select>
+
 </mapper>

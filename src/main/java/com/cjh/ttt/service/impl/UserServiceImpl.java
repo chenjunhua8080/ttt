@@ -3,6 +3,7 @@ package com.cjh.ttt.service.impl;
 import com.alibaba.nacos.common.util.UuidUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cjh.ttt.base.interceptor.UserContext;
+import com.cjh.ttt.base.redis.RedisKeys;
 import com.cjh.ttt.base.redis.RedisService;
 import com.cjh.ttt.dao.UserDao;
 import com.cjh.ttt.dto.TokenDto;
@@ -38,18 +39,18 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     }
 
     @Override
-    public TokenDto login(String username) {
-        User user = baseMapper.selectByUserName(username);
+    public TokenDto login(String code) {
+        User user = baseMapper.selectByUserName(code);
         //用户不存在，尝试注册
         if (user == null) {
             user = new User();
-            user.setUsername(username);
-            user.setNickname(username);
+            user.setUsername(code);
+            user.setNickname(code);
             baseMapper.insert(user);
         }
         //创建token默认3天
         String uuid = UuidUtils.generateUuid();
-        redisService.set(uuid, user.getId(), RedisService.DAY_3);
+        redisService.set(RedisKeys.getTokenKey(uuid), user.getId(), RedisService.DAY_3);
         TokenDto tokenDto = new TokenDto();
         tokenDto.setToken(uuid);
         tokenDto.setExpires(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 2));

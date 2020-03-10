@@ -2,6 +2,7 @@ package com.cjh.ttt.base.interceptor;
 
 import com.cjh.ttt.base.error.ErrorEnum;
 import com.cjh.ttt.base.error.ServiceException;
+import com.cjh.ttt.base.redis.RedisKeys;
 import com.cjh.ttt.base.redis.RedisService;
 import com.cjh.ttt.entity.User;
 import com.cjh.ttt.service.UserService;
@@ -40,7 +41,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
         if (token == null) {
             throw new ServiceException(ErrorEnum.TOKEN_NULL);
         }
-        String userId = redisService.get(token.trim());
+        String userId = redisService.get(RedisKeys.getTokenKey(token.trim()));
         if (userId == null) {
             throw new ServiceException(ErrorEnum.TOKEN_EXPIRE);
         }

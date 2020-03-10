@@ -1,7 +1,9 @@
 package com.cjh.ttt.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.cjh.ttt.dto.DictDto;
 import com.cjh.ttt.entity.Dict;
+import java.io.Serializable;
 
 /**
  * (Dict)表服务接口
@@ -19,4 +21,8 @@ public interface DictService extends IService<Dict> {
      */
     boolean deleteById(Integer id);
 
+    /**
+     * 根据type + key 查找 value
+     */
+    DictDto getValueByTypeAndKey(String type, Integer key);
 }
