@@ -1,5 +1,6 @@
 package com.cjh.ttt.request;
 
+import javax.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
@@ -15,6 +16,12 @@ public class LoginReq {
      * 通过code换取openId
      * https://developer.toutiao.com/dev/cn/mini-app/develop/server/log-in/code2session
      */
+    @NotBlank(message = "code 不能为空")
     public String code;
+    @NotBlank(message = "avatar 不能为空")
+    public String avatar;
+    @NotBlank(message = "nickname 不能为空")
+    public String nickname;
+    public Integer sex;
 
 }

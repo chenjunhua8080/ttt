@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class TokenDto {
 
+    private Integer userId;
     private String token;
     private Date expires;
 }

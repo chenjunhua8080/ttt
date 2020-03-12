@@ -2,6 +2,7 @@ package com.cjh.ttt.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
@@ -21,6 +22,10 @@ public class User implements Serializable {
 
     @TableId
     private Integer id;
+    /**
+     * openId
+     */
+    private String openId;
     /**
      * 用户名
      */
@@ -56,6 +61,7 @@ public class User implements Serializable {
     /**
      * 数据级别 0无效 1正常
      */
+    @TableLogic
     private Integer dataLevel;
 
     @TableField(exist = false)

@@ -8,7 +8,9 @@ import com.cjh.ttt.base.redis.RedisService;
 import com.cjh.ttt.dao.UserDao;
 import com.cjh.ttt.dto.TokenDto;
 import com.cjh.ttt.entity.User;
+import com.cjh.ttt.request.LoginReq;
 import com.cjh.ttt.service.UserService;
+import com.cjh.ttt.toutiao.TouTiaoApiService;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserService {
 
     private RedisService redisService;
+    private TouTiaoApiService touTiaoApiService;
 
     /**
      * 通过主键删除数据
@@ -39,22 +42,36 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     }
 
     @Override
-    public TokenDto login(String code) {
-        User user = baseMapper.selectByUserName(code);
-        //用户不存在，尝试注册
+    public TokenDto login(LoginReq loginReq) {
+        String openId = touTiaoApiService.code2Session(loginReq.getCode());
+        User user = baseMapper.selectByOpenId(openId);
+
+        //用户不存在，尝试注册/存在则更新
         if (user == null) {
             user = new User();
-            user.setUsername(code);
-            user.setNickname(code);
+            user.setOpenId(openId);
+            user.setUsername(UuidUtils.generateUuid().replaceAll("-", ""));
+            user.setNickname(loginReq.getNickname());
+            user.setAvatar(loginReq.getAvatar());
+            user.setSex(loginReq.getSex());
             baseMapper.insert(user);
+        } else {
+            user.setNickname(loginReq.getNickname());
+            user.setAvatar(loginReq.getAvatar());
+            user.setSex(loginReq.getSex());
+            user.setUpdateTime(new Date());
+            baseMapper.updateById(user);
         }
+
         //创建token默认3天
-        String uuid = UuidUtils.generateUuid();
-        redisService.set(RedisKeys.getTokenKey(uuid), user.getId(), RedisService.DAY_3);
+        String token = UuidUtils.generateUuid().replaceAll("-", "");
+        redisService.set(RedisKeys.getTokenKey(token), user.getId(), RedisService.DAY_3);
         TokenDto tokenDto = new TokenDto();
-        tokenDto.setToken(uuid);
+        tokenDto.setToken(token);
         tokenDto.setExpires(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 2));
 
+        //userId
+        tokenDto.setUserId(user.getId());
         return tokenDto;
     }
 

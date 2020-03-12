@@ -9,8 +9,8 @@
     where id = #{id}
   </delete>
 
-  <select id="selectByUserName" resultType="com.cjh.ttt.entity.User">
-    select * from user where data_level = 1 and username = #{username}
+  <select id="selectByOpenId" resultType="com.cjh.ttt.entity.User">
+    select * from user where data_level = 1 and open_id = #{openId}
   </select>
 
 </mapper>

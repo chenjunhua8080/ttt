@@ -23,10 +23,10 @@ public interface UserDao extends BaseMapper<User> {
     int deleteById(Integer id);
 
     /**
-     * 根据username查找
+     * 根据openId查找
      *
-     * @param username 主键
+     * @param openId openId
      * @return User
      */
-    User selectByUserName(@Param("username") String username);
+    User selectByOpenId(@Param("openId") String openId);
 }

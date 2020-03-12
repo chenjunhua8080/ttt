@@ -4,13 +4,17 @@ package com.cjh.ttt.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cjh.ttt.base.interceptor.UserContext;
 import com.cjh.ttt.dto.TokenDto;
+import com.cjh.ttt.dto.UserDto;
 import com.cjh.ttt.entity.User;
 import com.cjh.ttt.request.LoginReq;
+import com.cjh.ttt.request.UserUpdateRequest;
 import com.cjh.ttt.service.UserService;
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,7 +45,7 @@ public class UserController {
      */
     @PostMapping("/login")
     public R login(@RequestBody LoginReq loginReq) {
-        TokenDto tokenDto = userService.login(loginReq.getCode());
+        TokenDto tokenDto = userService.login(loginReq);
         return R.ok(tokenDto);
     }
 
@@ -75,7 +79,10 @@ public class UserController {
      */
     @GetMapping("/info/{id}")
     public R selectOne(@PathVariable Serializable id) {
-        return R.ok(this.userService.getById(id));
+        User user = this.userService.getById(id);
+        UserDto dto = new UserDto();
+        BeanUtils.copyProperties(user, dto);
+        return R.ok(dto);
     }
 
     /**
@@ -92,11 +99,15 @@ public class UserController {
     /**
      * 修改数据
      *
-     * @param user 实体对象
+     * @param updateRequest 实体对象
      * @return 修改结果
      */
     @PostMapping("/update")
-    public R update(@RequestBody User user) {
+    public R update(@RequestBody UserUpdateRequest updateRequest) {
+        Integer userId = UserContext.getId();
+        User user = new User();
+        BeanUtils.copyProperties(updateRequest, user);
+        user.setId(userId);
         return R.ok(this.userService.updateById(user));
     }
 
