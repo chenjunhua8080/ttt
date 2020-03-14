@@ -3,6 +3,7 @@ package com.cjh.ttt.toutiao;
 import com.cjh.ttt.base.error.ServiceException;
 import com.cjh.ttt.base.redis.RedisKeys;
 import com.cjh.ttt.base.redis.RedisService;
+import com.cjh.ttt.base.util.ImgUtil;
 import com.cjh.ttt.base.util.JsonUtil;
 import com.cjh.ttt.base.util.OkHttpUtil;
 import java.io.IOException;
@@ -111,7 +112,7 @@ public class TouTiaoApiService {
     /**
      * 创建二维码
      */
-    public void createQrCode() {
+    public String createQrCode() {
         Map<String, Object> params = new HashMap<>(7);
         params.put("access_token", getAccessToken());
         params.put("appname", null);
@@ -120,7 +121,12 @@ public class TouTiaoApiService {
         params.put("line_color", null);
         params.put("background", null);
         params.put("set_icon", true);
-        sendPostRequestGetIO(POST_CREATE_QR_CODE, params);
+        InputStream inputStream = sendPostRequestGetIO(POST_CREATE_QR_CODE, params);
+        String file = ImgUtil.inputStream2file(inputStream);
+        if (file == null) {
+            throw new ServiceException("二维码生成失败");
+        }
+        return file;
     }
 
 
@@ -142,7 +148,7 @@ public class TouTiaoApiService {
     /**
      * 统一执行post请求
      */
-    private String sendPostRequestGetIO(String url, Map<String, Object> params) {
+    private InputStream sendPostRequestGetIO(String url, Map<String, Object> params) {
         String json = JsonUtil.java2Json(params);
         log.info("########## start #######");
         log.info("url -> {}", url);
@@ -152,19 +158,9 @@ public class TouTiaoApiService {
             log.info("resp -> size: {}", inputStream.available());
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         log.info("########## end #######");
-
-        //TODO 返回图片路径
-        return null;
+        return inputStream;
     }
 
     /**

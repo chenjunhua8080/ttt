@@ -55,12 +55,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             user.setAvatar(loginReq.getAvatar());
             user.setSex(loginReq.getSex());
             baseMapper.insert(user);
-        } else {
-            user.setNickname(loginReq.getNickname());
-            user.setAvatar(loginReq.getAvatar());
-            user.setSex(loginReq.getSex());
-            user.setUpdateTime(new Date());
-            baseMapper.updateById(user);
         }
 
         //创建token默认3天
