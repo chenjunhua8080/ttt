@@ -13,4 +13,8 @@
     select * from user where data_level = 1 and open_id = #{openId}
   </select>
 
+  <select id="selectByPhone" resultType="com.cjh.ttt.entity.User">
+    select * from user where data_level = 1 and phone = #{phone}
+  </select>
+
 </mapper>

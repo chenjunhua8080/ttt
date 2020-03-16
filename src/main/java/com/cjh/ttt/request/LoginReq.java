@@ -18,9 +18,8 @@ public class LoginReq {
      */
     @NotBlank(message = "code 不能为空")
     public String code;
-    @NotBlank(message = "avatar 不能为空")
+
     public String avatar;
-    @NotBlank(message = "nickname 不能为空")
     public String nickname;
     public Integer sex;
 

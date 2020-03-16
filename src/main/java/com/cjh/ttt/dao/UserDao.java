@@ -3,7 +3,6 @@ package com.cjh.ttt.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cjh.ttt.entity.User;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * 用户表(User)表数据库访问层
@@ -28,5 +27,10 @@ public interface UserDao extends BaseMapper<User> {
      * @param openId openId
      * @return User
      */
-    User selectByOpenId(@Param("openId") String openId);
+    User selectByOpenId(String openId);
+
+    /**
+     * 根据手机号查询
+     */
+    User selectByPhone(String phone);
 }

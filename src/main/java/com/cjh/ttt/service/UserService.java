@@ -31,4 +31,8 @@ public interface UserService extends IService<User> {
      */
     void logout();
 
+    /**
+     * 修改资料
+     */
+    void update(User user);
 }

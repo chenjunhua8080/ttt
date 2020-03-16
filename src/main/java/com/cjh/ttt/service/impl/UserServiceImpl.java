@@ -2,6 +2,8 @@ package com.cjh.ttt.service.impl;
 
 import com.alibaba.nacos.common.util.UuidUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cjh.ttt.base.error.ErrorEnum;
+import com.cjh.ttt.base.error.ServiceException;
 import com.cjh.ttt.base.interceptor.UserContext;
 import com.cjh.ttt.base.redis.RedisKeys;
 import com.cjh.ttt.base.redis.RedisService;
@@ -14,6 +16,7 @@ import com.cjh.ttt.toutiao.TouTiaoApiService;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -72,5 +75,18 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     @Override
     public void logout() {
         redisService.delete(UserContext.getToken());
+    }
+
+    @Override
+    public void update(User user) {
+        //校验手机
+        String phone = user.getPhone();
+        if (StringUtils.isNotBlank(phone)) {
+            User phoneUser = baseMapper.selectByPhone(phone);
+            if (phoneUser != null && !user.getId().equals(phoneUser.getId())) {
+                throw new ServiceException(ErrorEnum.PHONE_BIND_ED);
+            }
+        }
+        baseMapper.updateById(user);
     }
 }

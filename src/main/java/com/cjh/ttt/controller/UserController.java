@@ -12,6 +12,7 @@ import com.cjh.ttt.request.LoginReq;
 import com.cjh.ttt.request.UserUpdateRequest;
 import com.cjh.ttt.service.UserService;
 import java.io.Serializable;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -44,7 +45,7 @@ public class UserController {
      * @return token
      */
     @PostMapping("/login")
-    public R login(@RequestBody LoginReq loginReq) {
+    public R login(@Valid @RequestBody LoginReq loginReq) {
         TokenDto tokenDto = userService.login(loginReq);
         return R.ok(tokenDto);
     }
@@ -103,12 +104,13 @@ public class UserController {
      * @return 修改结果
      */
     @PostMapping("/update")
-    public R update(@RequestBody UserUpdateRequest updateRequest) {
+    public R update(@Valid @RequestBody UserUpdateRequest updateRequest) {
         Integer userId = UserContext.getId();
         User user = new User();
         BeanUtils.copyProperties(updateRequest, user);
         user.setId(userId);
-        return R.ok(this.userService.updateById(user));
+        userService.update(user);
+        return R.ok("修改成功");
     }
 
     /**
