@@ -1,8 +1,13 @@
 package com.cjh.ttt.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cjh.ttt.entity.User;
+import java.util.Date;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 用户表(User)表数据库访问层
@@ -33,4 +38,26 @@ public interface UserDao extends BaseMapper<User> {
      * 根据手机号查询
      */
     User selectByPhone(String phone);
+
+    /**
+     * 根据生日查询
+     */
+    List<User> selectByBirthday(Date birthday);
+
+    /**
+     * 根据性别、生日查询，10条
+     */
+    List<User> selectBySexAndBirthday(@Param("sex") int sex, @Param("birthday") Date birthday,
+        @Param("ids") List<Integer> ids);
+
+    /**
+     * 根据性别、生日查询，10条
+     */
+    List<User> selectBySexAndNearByBirthday(@Param("sex") int sex, @Param("birthday") Date birthday,
+        @Param("ids") List<Integer> ids);
+
+    /**
+     * 分页查询
+     */
+    IPage<User> selectPageNotInIds(@Param("page") Page<User> page, @Param("ids") List<Integer> ids);
 }

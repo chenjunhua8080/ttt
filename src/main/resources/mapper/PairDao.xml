@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.ttt.dao.PairDao">
+
+  <!--通过主键删除-->
+  <delete id="deleteById">
+    delete
+    from ttt.dict
+    where id = #{id}
+  </delete>
+
+  <select id="selectBySender" resultType="java.lang.Integer">
+    select count(1) from pair where data_level = 1 and status = 1 and sender = #{sender}
+  </select>
+
+  <select id="selectBySenderAndRecipient" resultType="com.cjh.ttt.entity.Pair">
+    select * from pair where data_level = 1 and sender = #{sender} and recipient = #{recipient}
+  </select>
+
+</mapper>

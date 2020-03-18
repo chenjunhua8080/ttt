@@ -8,7 +8,7 @@ import com.cjh.ttt.base.interceptor.UserContext;
 import com.cjh.ttt.dto.TokenDto;
 import com.cjh.ttt.dto.UserDto;
 import com.cjh.ttt.entity.User;
-import com.cjh.ttt.request.LoginReq;
+import com.cjh.ttt.request.LoginRequest;
 import com.cjh.ttt.request.UserUpdateRequest;
 import com.cjh.ttt.service.UserService;
 import java.io.Serializable;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 用户表(User)表控制层
+ * [我的] 模块
  *
  * @author cjh
  * @since 2020-02-27 17:51:12
@@ -41,12 +41,12 @@ public class UserController {
     /**
      * 授权登录
      *
-     * @param loginReq 实体
+     * @param loginRequest 实体
      * @return token
      */
     @PostMapping("/login")
-    public R login(@Valid @RequestBody LoginReq loginReq) {
-        TokenDto tokenDto = userService.login(loginReq);
+    public R login(@Valid @RequestBody LoginRequest loginRequest) {
+        TokenDto tokenDto = userService.login(loginRequest);
         return R.ok(tokenDto);
     }
 
@@ -105,7 +105,7 @@ public class UserController {
      */
     @PostMapping("/update")
     public R update(@Valid @RequestBody UserUpdateRequest updateRequest) {
-        Integer userId = UserContext.getId();
+        Integer userId = UserContext.getUserId();
         User user = new User();
         BeanUtils.copyProperties(updateRequest, user);
         user.setId(userId);

@@ -3,7 +3,7 @@ package com.cjh.ttt.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cjh.ttt.dto.TokenDto;
 import com.cjh.ttt.entity.User;
-import com.cjh.ttt.request.LoginReq;
+import com.cjh.ttt.request.LoginRequest;
 
 /**
  * 用户表(User)表服务接口
@@ -24,7 +24,7 @@ public interface UserService extends IService<User> {
     /**
      * 登录获取token
      */
-    TokenDto login(LoginReq loginReq);
+    TokenDto login(LoginRequest loginRequest);
 
     /**
      * 退出登录
@@ -35,4 +35,5 @@ public interface UserService extends IService<User> {
      * 修改资料
      */
     void update(User user);
+
 }

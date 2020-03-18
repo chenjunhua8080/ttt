@@ -10,11 +10,77 @@
   </delete>
 
   <select id="selectByOpenId" resultType="com.cjh.ttt.entity.User">
-    select * from user where data_level = 1 and open_id = #{openId}
+    select *
+    from user
+    where data_level = 1
+      and open_id = #{openId}
   </select>
 
   <select id="selectByPhone" resultType="com.cjh.ttt.entity.User">
-    select * from user where data_level = 1 and phone = #{phone}
+    select *
+    from user
+    where data_level = 1
+      and phone = #{phone}
+  </select>
+
+  <select id="selectByBirthday" resultType="com.cjh.ttt.entity.User">
+    select *
+    from user
+    where data_level = 1
+      and birthday = #{birthday}
+  </select>
+
+  <select id="selectBySexAndBirthday" resultType="com.cjh.ttt.entity.User">
+    select tt.*
+    from (
+           select *
+           from user
+           where data_level = 1
+             and sex = #{sex}
+             and birthday = #{birthday}
+            <if test="ids != null and ids.size() > 0">
+              and id not in
+              <foreach collection="ids" separator="," open="(" close=")" item="item">
+                #{item}
+              </foreach>
+            </if>
+           order by id
+         ) tt
+    limit 10
+  </select>
+
+  <select id="selectBySexAndNearByBirthday" resultType="com.cjh.ttt.entity.User">
+    select tt.*
+    from (
+           select *
+           from user
+           where data_level = 1
+             and (
+               date_format(birthday, 'MM-dd') = date_format(#{birthday}, 'MM-dd')
+               or
+               to_days(birthday) between to_days(#{birthday}) - 365 and to_days(#{birthday}) + 365
+             )
+             and sex = #{sex}
+            <if test="ids != null and ids.size() > 0">
+              and id not in
+              <foreach collection="ids" separator="," open="(" close=")" item="item">
+                #{item}
+              </foreach>
+            </if>
+         ) tt
+    limit 10
+  </select>
+
+  <select id="selectPageNotInIds" resultType="com.cjh.ttt.entity.User">
+    select *
+    from user
+    where data_level = 1
+    <if test="ids != null and ids.size() > 0">
+      and id not in
+      <foreach collection="ids" separator="," open="(" close=")" item="item">
+        #{item}
+      </foreach>
+    </if>
   </select>
 
 </mapper>

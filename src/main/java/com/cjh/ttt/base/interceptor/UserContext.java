@@ -20,7 +20,7 @@ public class UserContext {
     /**
      * 功能：获取用户id
      */
-    public static Integer getId() {
+    public static Integer getUserId() {
         return getUser().getId();
     }
 

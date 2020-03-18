@@ -21,6 +21,10 @@ public enum ErrorEnum {
     TOKEN_NULL(10001, "token 不能为空"),
     TOKEN_EXPIRE(10002, "token 已过期"),
     PHONE_BIND_ED(10003, "手机号已绑定其他用户"),
+    SEX_NOT_SET(10004, "性别还未设置哦"),
+    BIRTHDAY_NOT_SET(10005, "生日还未设置哦"),
+    PAIR_SEND_ED(10006, "等待对方确定"),
+    PAIR_SUCCESS_ED(10007, "已配对成功"),
     ;
 
     private int code;

@@ -10,7 +10,7 @@ import lombok.Data;
  * @date 2020/3/10
  */
 @Data
-public class LoginReq {
+public class LoginRequest {
 
     /**
      * 通过code换取openId

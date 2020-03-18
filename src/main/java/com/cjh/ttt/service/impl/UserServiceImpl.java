@@ -10,7 +10,8 @@ import com.cjh.ttt.base.redis.RedisService;
 import com.cjh.ttt.dao.UserDao;
 import com.cjh.ttt.dto.TokenDto;
 import com.cjh.ttt.entity.User;
-import com.cjh.ttt.request.LoginReq;
+import com.cjh.ttt.request.LoginRequest;
+import com.cjh.ttt.service.MessageService;
 import com.cjh.ttt.service.UserService;
 import com.cjh.ttt.toutiao.TouTiaoApiService;
 import java.util.Date;
@@ -45,8 +46,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     }
 
     @Override
-    public TokenDto login(LoginReq loginReq) {
-        String openId = touTiaoApiService.code2Session(loginReq.getCode());
+    public TokenDto login(LoginRequest loginRequest) {
+        String openId = touTiaoApiService.code2Session(loginRequest.getCode());
         User user = baseMapper.selectByOpenId(openId);
 
         //用户不存在，尝试注册/存在则更新
@@ -54,9 +55,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             user = new User();
             user.setOpenId(openId);
             user.setUsername(UuidUtils.generateUuid().replaceAll("-", ""));
-            user.setNickname(loginReq.getNickname());
-            user.setAvatar(loginReq.getAvatar());
-            user.setSex(loginReq.getSex());
+            user.setNickname(loginRequest.getNickname());
+            user.setAvatar(loginRequest.getAvatar());
+            user.setSex(loginRequest.getSex());
             baseMapper.insert(user);
         }
 
@@ -89,4 +90,5 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         }
         baseMapper.updateById(user);
     }
+
 }
