@@ -1,15 +1,15 @@
 package com.cjh.ttt.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.cjh.ttt.entity.Friend;
+import com.cjh.ttt.entity.Address;
 
 /**
- * (Friend)表服务接口
+ * 地址表(Address)表服务接口
  *
  * @author cjh
- * @since 2020-02-27 15:16:43
+ * @since 2020-03-19 15:41:08
  */
-public interface FriendService extends IService<Friend> {
+public interface AddressService extends IService<Address> {
 
     /**
      * 通过主键删除数据

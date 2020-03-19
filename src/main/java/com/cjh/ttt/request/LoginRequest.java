@@ -19,8 +19,18 @@ public class LoginRequest {
     @NotBlank(message = "code 不能为空")
     public String code;
 
+    /**
+     * 基本信息
+     */
     public String avatar;
     public String nickname;
     public Integer sex;
+
+    /**
+     * 地址坐标
+     */
+    public String lng;
+    public String lat;
+
 
 }

@@ -25,6 +25,7 @@ public enum ErrorEnum {
     BIRTHDAY_NOT_SET(10005, "生日还未设置哦"),
     PAIR_SEND_ED(10006, "等待对方确定"),
     PAIR_SUCCESS_ED(10007, "已配对成功"),
+    MAP_ERROR(10008, "地图服务调用失败"),
     ;
 
     private int code;
