@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cjh.ttt.base.error.ErrorEnum;
 import com.cjh.ttt.base.error.ServiceException;
-import com.cjh.ttt.base.interceptor.UserContext;
+import com.cjh.ttt.base.token.UserContext;
 import com.cjh.ttt.dao.PairDao;
 import com.cjh.ttt.dao.UserDao;
 import com.cjh.ttt.dto.PairDto;

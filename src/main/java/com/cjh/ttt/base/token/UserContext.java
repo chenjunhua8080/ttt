@@ -1,4 +1,4 @@
-package com.cjh.ttt.base.interceptor;
+package com.cjh.ttt.base.token;
 
 import com.cjh.ttt.entity.User;
 import lombok.extern.slf4j.Slf4j;

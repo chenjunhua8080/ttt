@@ -1,4 +1,4 @@
-package com.cjh.ttt.base.interceptor;
+package com.cjh.ttt.base.token;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

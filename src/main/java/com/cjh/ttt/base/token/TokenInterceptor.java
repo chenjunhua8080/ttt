@@ -1,4 +1,4 @@
-package com.cjh.ttt.base.interceptor;
+package com.cjh.ttt.base.token;
 
 import com.cjh.ttt.base.error.ErrorEnum;
 import com.cjh.ttt.base.error.ServiceException;

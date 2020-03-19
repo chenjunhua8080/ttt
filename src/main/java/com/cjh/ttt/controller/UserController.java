@@ -4,7 +4,7 @@ package com.cjh.ttt.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cjh.ttt.base.interceptor.UserContext;
+import com.cjh.ttt.base.token.UserContext;
 import com.cjh.ttt.dto.TokenDto;
 import com.cjh.ttt.dto.UserDto;
 import com.cjh.ttt.entity.User;
