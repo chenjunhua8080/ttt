@@ -2,6 +2,8 @@ package com.cjh.ttt.controller;
 
 
 import com.baomidou.mybatisplus.extension.api.R;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cjh.ttt.entity.User;
 import com.cjh.ttt.request.PairingRequest;
 import com.cjh.ttt.service.PairService;
 import javax.validation.Valid;
@@ -31,8 +33,8 @@ public class PairController {
      * 获取配对列表
      */
     @GetMapping("/list")
-    public R list() {
-        return R.ok(pairService.getPairList());
+    public R list(Page<User> page, Integer type) {
+        return R.ok(pairService.getPairList(page, type));
     }
 
     /**

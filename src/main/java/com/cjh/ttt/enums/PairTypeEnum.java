@@ -11,24 +11,24 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum PairTitleEnum {
+public enum PairTypeEnum {
 
     /**
-     * 配对列表标题枚举
+     * 配对列表类型枚举
      */
-    TITLE1(1, "命中注定"),
-    TITLE2(2, "专属推荐"),
-    TITLE3(3, "萍水相逢"),
+    PAIR_TYPE_1(1, "命中注定"),
+    PAIR_TYPE_2(2, "专属推荐"),
+    PAIR_TYPE_3(3, "离我最近"),
     ;
 
     private int code;
     private String name;
 
-    public static PairTitleEnum from(Integer code) {
+    public static PairTypeEnum from(Integer code) {
         if (code == null) {
             return null;
         }
-        for (PairTitleEnum e : PairTitleEnum.values()) {
+        for (PairTypeEnum e : PairTypeEnum.values()) {
             if (e.code == code) {
                 return e;
             }
@@ -37,7 +37,7 @@ public enum PairTitleEnum {
     }
 
     public static String getNameByCode(Integer code) {
-        PairTitleEnum e = from(code);
+        PairTypeEnum e = from(code);
         return e == null ? "" : e.getName();
     }
 }

@@ -1,8 +1,11 @@
 package com.cjh.ttt.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cjh.ttt.entity.Address;
+import com.cjh.ttt.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 地址表(Address)表数据库访问层
@@ -25,4 +28,5 @@ public interface AddressDao extends BaseMapper<Address> {
      * 查询用户地址
      */
     Address selectByUserId(Integer userId);
+
 }

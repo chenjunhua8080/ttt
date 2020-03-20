@@ -1,18 +1,21 @@
 package com.cjh.ttt.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cjh.ttt.base.error.ErrorEnum;
 import com.cjh.ttt.base.error.ServiceException;
 import com.cjh.ttt.base.token.UserContext;
+import com.cjh.ttt.dao.AddressDao;
 import com.cjh.ttt.dao.PairDao;
 import com.cjh.ttt.dao.UserDao;
 import com.cjh.ttt.dto.PairDto;
-import com.cjh.ttt.dto.PairDto.UserBean;
+import com.cjh.ttt.dto.UserDto;
+import com.cjh.ttt.entity.Address;
 import com.cjh.ttt.entity.Pair;
 import com.cjh.ttt.entity.User;
 import com.cjh.ttt.enums.PairStatusEnum;
-import com.cjh.ttt.enums.PairTitleEnum;
+import com.cjh.ttt.enums.PairTypeEnum;
 import com.cjh.ttt.request.PairingRequest;
 import com.cjh.ttt.service.PairService;
 import java.util.ArrayList;
@@ -36,73 +39,72 @@ import org.springframework.stereotype.Service;
 public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairService {
 
     private UserDao userDao;
+    private AddressDao addressDao;
 
     @Override
-    public List<PairDto> getPairList() {
-        List<PairDto> list = new ArrayList<>();
+    public PairDto getPairList(Page<User> page, Integer type) {
+        //查询用户
         Integer userId = UserContext.getUserId();
         User user = userDao.selectById(userId);
         int sex = user.getSex();
         if (sex == 0) {
             throw new ServiceException(ErrorEnum.SEX_NOT_SET);
         }
+        sex = sex == 1 ? 2 : 1;
         if (user.getBirthday() == null) {
             throw new ServiceException(ErrorEnum.BIRTHDAY_NOT_SET);
         }
-        sex = sex == 1 ? 2 : 1;
+
         //去重ids
         List<Integer> ids = new ArrayList<>();
         ids.add(userId);
 
-        //匹配: 命中注定
-        List<User> userList = userDao.selectBySexAndBirthday(sex, user.getBirthday(), ids);
+        //根据类型查询
+        PairTypeEnum pairType = PairTypeEnum.from(type);
+        IPage<User> pages;
+        switch (pairType) {
+            case PAIR_TYPE_1:
+                pages = userDao.selectBySexAndBirthday(page, sex, user.getBirthday(), ids);
+                break;
+            case PAIR_TYPE_2:
+                pages = userDao.selectBySexAndNearByBirthday(page, sex, user.getBirthday(), ids);
+                break;
+            case PAIR_TYPE_3:
+                pages = selectByAddress(userId);
+                break;
+            default:
+                return null;
+        }
+
         //封装数据
-        List<UserBean> userBeanList = userList.stream().map(source -> {
-            UserBean userBean = new UserBean();
+        List<UserDto> userBeanList = pages.getRecords().stream().map(source -> {
+            UserDto userBean = new UserDto();
             BeanUtils.copyProperties(source, userBean);
             return userBean;
         }).collect(Collectors.toList());
-        PairDto pairDto = new PairDto();
-        pairDto.setUserList(userBeanList);
-        pairDto.setPairType(PairTitleEnum.TITLE1.getCode());
-        pairDto.setPairTypeValue(PairTitleEnum.TITLE1.getName());
-        list.add(pairDto);
+        PairDto dto = new PairDto();
+        Page<UserDto> pageData = new Page<>();
+        BeanUtils.copyProperties(pages, pageData);
+        pageData.setRecords(userBeanList);
+        dto.setPageData(pageData);
+        dto.setPairType(pairType.getCode());
+        dto.setPairTypeValue(pairType.getName());
 
-        //去重ids
-        ids.addAll(userList.stream().map(User::getId).collect(Collectors.toList()));
+        return dto;
+    }
 
-        //匹配: 专属推荐
-        userList = userDao.selectBySexAndNearByBirthday(sex, user.getBirthday(), ids);
-        //封装数据
-        userBeanList = userList.stream().map(source -> {
-            UserBean userBean = new UserBean();
-            BeanUtils.copyProperties(source, userBean);
-            return userBean;
-        }).collect(Collectors.toList());
-        pairDto = new PairDto();
-        pairDto.setUserList(userBeanList);
-        pairDto.setPairType(PairTitleEnum.TITLE2.getCode());
-        pairDto.setPairTypeValue(PairTitleEnum.TITLE2.getName());
-        list.add(pairDto);
+    /**
+     * 根据坐标查询离得最近的人
+     */
+    private IPage<User> selectByAddress(Integer userId) {
+        Address address = addressDao.selectByUserId(userId);
+        if (address == null) {
+            throw new ServiceException(ErrorEnum.SEX_NOT_SET);
+        }
+        String lng = address.getLng();
+        String lat = address.getLat();
 
-        //去重ids
-        ids.addAll(userList.stream().map(User::getId).collect(Collectors.toList()));
-
-        //匹配: 萍水相逢
-        userList = userDao.selectPageNotInIds(new Page<>(), ids).getRecords();
-        //封装数据
-        userBeanList = userList.stream().map(source -> {
-            UserBean userBean = new UserBean();
-            BeanUtils.copyProperties(source, userBean);
-            return userBean;
-        }).collect(Collectors.toList());
-        pairDto = new PairDto();
-        pairDto.setUserList(userBeanList);
-        pairDto.setPairType(PairTitleEnum.TITLE3.getCode());
-        pairDto.setPairTypeValue(PairTitleEnum.TITLE3.getName());
-        list.add(pairDto);
-
-        return list;
+        return baseMapper.selectByDistance(lng, lat);
     }
 
     @Override

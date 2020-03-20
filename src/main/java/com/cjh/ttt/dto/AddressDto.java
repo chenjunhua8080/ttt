@@ -1,9 +1,6 @@
 package com.cjh.ttt.dto;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
 /**
@@ -14,6 +11,7 @@ import lombok.Data;
  */
 @Data
 public class AddressDto implements Serializable {
+
     private static final long serialVersionUID = -57982087815704871L;
 
     /**
@@ -44,5 +42,10 @@ public class AddressDto implements Serializable {
      * 详细地址
      */
     private String detail;
+
+    /**
+     * 距离
+     */
+    private String distance;
 
 }

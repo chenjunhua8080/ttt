@@ -1,6 +1,6 @@
 package com.cjh.ttt.dto;
 
-import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,14 +10,6 @@ public class PairDto {
 
     private Integer pairType;
     private String pairTypeValue;
-    private List<UserBean> userList;
+    private IPage<UserDto> pageData;
 
-    @NoArgsConstructor
-    @Data
-    public static class UserBean {
-
-        private Integer id;
-        private String avatar;
-        private String nickname;
-    }
 }

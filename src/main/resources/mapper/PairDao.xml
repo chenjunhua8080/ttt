@@ -17,4 +17,14 @@
     select * from pair where data_level = 1 and sender = #{sender} and recipient = #{recipient}
   </select>
 
+  <select id="selectByDistance" resultType="com.cjh.ttt.entity.User">
+      select *,
+             ACOS(
+                   COS(RADIANS(lat)) * COS(RADIANS(#{lat})) * COS(RADIANS(lng - #{lng}))
+                 + SIN(RADIANS(lat)) * SIN(RADIANS(#{lat}))
+               ) * 6371393 distance
+      from address
+      order by distance
+  </select>
+
 </mapper>

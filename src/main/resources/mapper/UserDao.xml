@@ -46,7 +46,6 @@
             </if>
            order by id
          ) tt
-    limit 10
   </select>
 
   <select id="selectBySexAndNearByBirthday" resultType="com.cjh.ttt.entity.User">
@@ -68,10 +67,9 @@
               </foreach>
             </if>
          ) tt
-    limit 10
   </select>
 
-  <select id="selectPageNotInIds" resultType="com.cjh.ttt.entity.User">
+  <select id="selectByAddress" resultType="com.cjh.ttt.entity.User">
     select *
     from user
     where data_level = 1

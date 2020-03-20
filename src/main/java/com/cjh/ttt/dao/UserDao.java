@@ -47,17 +47,21 @@ public interface UserDao extends BaseMapper<User> {
     /**
      * 根据性别、生日查询，10条
      */
-    List<User> selectBySexAndBirthday(@Param("sex") int sex, @Param("birthday") Date birthday,
+    IPage<User> selectBySexAndBirthday(Page<User> page,
+        @Param("sex") int sex,
+        @Param("birthday") Date birthday,
         @Param("ids") List<Integer> ids);
 
     /**
      * 根据性别、生日查询，10条
      */
-    List<User> selectBySexAndNearByBirthday(@Param("sex") int sex, @Param("birthday") Date birthday,
+    IPage<User> selectBySexAndNearByBirthday(Page<User> page,
+        @Param("sex") int sex,
+        @Param("birthday") Date birthday,
         @Param("ids") List<Integer> ids);
 
     /**
      * 分页查询
      */
-    IPage<User> selectPageNotInIds(@Param("page") Page<User> page, @Param("ids") List<Integer> ids);
+    IPage<User> selectByAddress(@Param("page") Page<User> page, @Param("ids") List<Integer> ids);
 }

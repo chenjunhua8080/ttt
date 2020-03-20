@@ -26,6 +26,7 @@ public enum ErrorEnum {
     PAIR_SEND_ED(10006, "等待对方确定"),
     PAIR_SUCCESS_ED(10007, "已配对成功"),
     MAP_ERROR(10008, "地图服务调用失败"),
+    ADDRESS_NOT_SET(10009, "请先设置定位"),
     ;
 
     private int code;

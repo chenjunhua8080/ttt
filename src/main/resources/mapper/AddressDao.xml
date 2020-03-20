@@ -10,7 +10,9 @@
   </delete>
 
   <select id="selectByUserId" resultType="com.cjh.ttt.entity.Address">
-    select * from address where user_id = #{userId}
+    select *
+    from address
+    where user_id = #{userId}
   </select>
 
 </mapper>
