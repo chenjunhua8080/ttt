@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @author cjh
  * @since 2020-03-19 15:41:08
  */
-@Mapper 
+@Mapper
 public interface AddressDao extends BaseMapper<Address> {
 
     /**
@@ -21,4 +21,8 @@ public interface AddressDao extends BaseMapper<Address> {
      */
     int deleteById(Integer id);
 
+    /**
+     * 查询用户地址
+     */
+    Address selectByUserId(Integer userId);
 }

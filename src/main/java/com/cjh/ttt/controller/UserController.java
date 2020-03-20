@@ -79,10 +79,8 @@ public class UserController {
      * @return 单条数据
      */
     @GetMapping("/info/{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        User user = this.userService.getById(id);
-        UserDto dto = new UserDto();
-        BeanUtils.copyProperties(user, dto);
+    public R selectOne(@PathVariable Integer id) {
+        UserDto dto = userService.info(id);
         return R.ok(dto);
     }
 

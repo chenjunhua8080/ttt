@@ -2,6 +2,7 @@ package com.cjh.ttt.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cjh.ttt.dto.TokenDto;
+import com.cjh.ttt.dto.UserDto;
 import com.cjh.ttt.entity.User;
 import com.cjh.ttt.request.LoginRequest;
 
@@ -36,4 +37,8 @@ public interface UserService extends IService<User> {
      */
     void update(User user);
 
+    /**
+     * 查询用户信息
+     */
+    UserDto info(Integer userId);
 }

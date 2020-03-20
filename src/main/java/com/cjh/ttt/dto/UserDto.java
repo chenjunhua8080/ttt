@@ -1,8 +1,5 @@
 package com.cjh.ttt.dto;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
@@ -39,5 +36,10 @@ public class UserDto implements Serializable {
      * 手机号
      */
     private String phone;
+
+    /**
+     * 地址dto
+     */
+    private AddressDto address;
 
 }
