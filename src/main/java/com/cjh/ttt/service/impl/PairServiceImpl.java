@@ -20,9 +20,7 @@ import com.cjh.ttt.enums.PairStatusEnum;
 import com.cjh.ttt.enums.PairTypeEnum;
 import com.cjh.ttt.request.PairingRequest;
 import com.cjh.ttt.service.PairService;
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -87,6 +85,8 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
         List<UserDto> userBeanList = pages.getRecords().stream().map(source -> {
             UserDto userBean = new UserDto();
             BeanUtils.copyProperties(source, userBean);
+            //隐藏手机
+            userBean.setPhone(null);
             return userBean;
         }).collect(Collectors.toList());
         //离我最近，调用地图查询距离
@@ -102,6 +102,9 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
                         address.getLng(), address.getLat()
                     ))
                 );
+                //隐藏坐标
+                addressDto.setLng(null);
+                addressDto.setLat(null);
                 userDto.setAddress(addressDto);
             }
         }

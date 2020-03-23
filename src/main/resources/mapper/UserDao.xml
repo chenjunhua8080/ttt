@@ -66,6 +66,7 @@
         #{item}
       </foreach>
     </if>
+    order by birthday
     ) tt
   </select>
 
