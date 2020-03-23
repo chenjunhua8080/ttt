@@ -42,4 +42,9 @@ public class UserDto implements Serializable {
      */
     private AddressDto address;
 
+    /**
+     * 匹配状态
+     */
+    private Integer pairStatus;
+
 }

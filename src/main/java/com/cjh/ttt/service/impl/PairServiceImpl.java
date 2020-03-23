@@ -21,7 +21,6 @@ import com.cjh.ttt.enums.PairTypeEnum;
 import com.cjh.ttt.request.PairingRequest;
 import com.cjh.ttt.service.PairService;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,7 +60,13 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
 
         //去重ids
         List<Integer> ids = new ArrayList<>();
+        //不包含自己
         ids.add(userId);
+        //不包已配对
+        List<Integer> pairIds = baseMapper.selectPairIds(userId);
+        if (pairIds != null && !pairIds.isEmpty()) {
+            ids.addAll(pairIds);
+        }
 
         //根据类型查询
         PairTypeEnum pairType = PairTypeEnum.from(type);
@@ -75,7 +80,7 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
                 pages = userDao.selectBySexAndNearByBirthday(page, sex, user.getBirthday(), ids);
                 break;
             case PAIR_TYPE_3:
-                pages = selectByAddress(page, userId);
+                pages = selectByAddress(page, userId, ids);
                 break;
             default:
                 return null;
@@ -87,6 +92,8 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
             BeanUtils.copyProperties(source, userBean);
             //隐藏手机
             userBean.setPhone(null);
+            //查询匹配状态
+            userBean.setPairStatus(baseMapper.selectStatus(userId, userBean.getId()));
             return userBean;
         }).collect(Collectors.toList());
         //离我最近，调用地图查询距离
@@ -122,7 +129,7 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
     /**
      * 根据坐标查询离得最近的人
      */
-    private IPage<User> selectByAddress(Page<User> page, Integer userId) {
+    private IPage<User> selectByAddress(Page<User> page, Integer userId, List<Integer> ids) {
         Address address = addressDao.selectByUserId(userId);
         if (address == null) {
             throw new ServiceException(ErrorEnum.SEX_NOT_SET);
@@ -130,31 +137,40 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
         String lng = address.getLng();
         String lat = address.getLat();
 
-        return userDao.selectByDistance(page, lng, lat, Collections.singletonList(userId));
+        return userDao.selectByDistance(page, lng, lat, ids);
     }
 
     @Override
     public void pairing(PairingRequest pairingRequest) {
         Integer userId = UserContext.getUserId();
         Integer pairUserId = pairingRequest.getId();
-        User pairUser = userDao.selectById(pairUserId);
         Pair oldPair = baseMapper.selectBySenderAndRecipient(userId, pairUserId);
         if (oldPair != null) {
-            if (PairStatusEnum.WAIT.getCode() == oldPair.getStatus()) {
-                throw new ServiceException(ErrorEnum.PAIR_SEND_ED);
-            }
             if (PairStatusEnum.SUCCESS.getCode() == oldPair.getStatus()) {
                 throw new ServiceException(ErrorEnum.PAIR_SUCCESS_ED);
             }
-            //修改配对关系
-            oldPair.setStatus(PairStatusEnum.WAIT.getCode());
-            oldPair.setUpdateTime(new Date());
-            baseMapper.updateById(oldPair);
+            if (PairStatusEnum.WAIT.getCode() == oldPair.getStatus()) {
+                if (oldPair.getSender().equals(userId)) {
+                    throw new ServiceException(ErrorEnum.PAIR_SEND_ED);
+                } else {
+                    //如果是对方先发起的配对，直接成功
+                    oldPair.setStatus(PairStatusEnum.SUCCESS.getCode());
+                    oldPair.setUpdateTime(new Date());
+                    baseMapper.updateById(oldPair);
+                }
+            }
+            if (PairStatusEnum.FAIL.getCode() == oldPair.getStatus()) {
+                //重新发起配对
+                oldPair.setStatus(PairStatusEnum.WAIT.getCode());
+                oldPair.setUpdateTime(new Date());
+                baseMapper.updateById(oldPair);
+            }
         } else {
             //建立配对关系
             Pair pair = new Pair();
+            pair.setChannel(pairingRequest.getChannel());
             pair.setSender(userId);
-            pair.setRecipient(pairUser.getId());
+            pair.setRecipient(pairUserId);
             pair.setContent(pairingRequest.getContent());
             baseMapper.insert(pair);
         }
@@ -163,7 +179,7 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
 
     @Override
     public int check(Integer id) {
-        return baseMapper.selectBySender(id);
+        return baseMapper.countPairSuccess(id);
     }
 
 }

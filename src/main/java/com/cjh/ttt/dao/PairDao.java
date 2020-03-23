@@ -1,9 +1,8 @@
 package com.cjh.ttt.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cjh.ttt.entity.Pair;
-import com.cjh.ttt.entity.User;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -27,11 +26,20 @@ public interface PairDao extends BaseMapper<Pair> {
     /**
      * 统计匹配次数
      */
-    int selectBySender(Integer sender);
+    int countPairSuccess(Integer userId);
 
     /**
      * 根据发送者,接收者查询
      */
     Pair selectBySenderAndRecipient(@Param("sender") Integer sender, @Param("recipient") Integer recipient);
 
+    /**
+     * 查询配对ids
+     */
+    List<Integer> selectPairIds(Integer userId);
+
+    /**
+     * 查询匹配状态
+     */
+    Integer selectStatus(@Param("sender") Integer sender, @Param("recipient") Integer recipient);
 }

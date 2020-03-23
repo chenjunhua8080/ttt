@@ -9,12 +9,25 @@
     where id = #{id}
   </delete>
 
-  <select id="selectBySender" resultType="java.lang.Integer">
-    select count(1) from pair where data_level = 1 and status = 1 and sender = #{sender}
+  <select id="countPairSuccess" resultType="java.lang.Integer">
+    select count(1) from pair where data_level = 1 and status = 1 and (sender = #{userId} or recipient = #{userId})
   </select>
 
   <select id="selectBySenderAndRecipient" resultType="com.cjh.ttt.entity.Pair">
-    select * from pair where data_level = 1 and sender = #{sender} and recipient = #{recipient}
+    select * from pair where data_level = 1
+        and (
+            (sender = #{sender} and recipient = #{recipient})
+            or
+            (sender = #{recipient} and recipient = #{sender})
+        )
+  </select>
+
+  <select id="selectPairIds" resultType="java.lang.Integer">
+    select recipient from pair where data_level = 1 and status = 1 and sender = #{userId}
+  </select>
+
+  <select id="selectStatus" resultType="java.lang.Integer">
+    select status from pair where data_level = 1 and sender = #{sender} and recipient = #{recipient}
   </select>
 
 </mapper>

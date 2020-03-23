@@ -28,7 +28,7 @@ public interface PairService extends IService<Pair> {
     void pairing(PairingRequest pairingRequest);
 
     /**
-     * 配对坚持
+     * 配对检测
      */
     int check(Integer id);
 }

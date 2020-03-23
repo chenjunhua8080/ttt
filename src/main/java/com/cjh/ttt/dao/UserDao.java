@@ -40,11 +40,6 @@ public interface UserDao extends BaseMapper<User> {
     User selectByPhone(String phone);
 
     /**
-     * 根据生日查询
-     */
-    List<User> selectByBirthday(Date birthday);
-
-    /**
      * 根据性别、生日查询，10条
      */
     IPage<User> selectBySexAndBirthday(Page<User> page,

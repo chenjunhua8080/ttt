@@ -15,7 +15,9 @@ public class PairingRequest {
 
     @NotNull(message = "配对id不能为空")
     public Integer id;
-    @NotBlank(message = "说点什么吧~")
+    @NotNull(message = "说点什么吧~")
     public String content;
+    @NotNull(message = "channel 不能为空")
+    public Integer channel;
 
 }

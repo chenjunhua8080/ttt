@@ -16,9 +16,9 @@ public enum PairStatusEnum {
     /**
      * 配对状态枚举
      */
-    WAIT(0, "等待对方确认"),
-    SUCCESS(1, "配对成功"),
-    FAIL(2, "配对失败"),
+    WAIT(0, "已送达"),
+    SUCCESS(1, "成功"),
+    FAIL(2, "失败"),
     ;
 
     private int code;

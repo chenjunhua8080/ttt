@@ -8,18 +8,22 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * (Pair)实体类
+ * 配对表(Pair)实体类
  *
  * @author cjh
- * @since 2020-03-16 22:56:18
+ * @since 2020-03-23 11:33:37
  */
 @Data
 @TableName("pair")
 public class Pair implements Serializable {
-    private static final long serialVersionUID = -20577142081902404L;
+    private static final long serialVersionUID = -46890561554429117L;
     
     @TableId
     private Integer id;
+    /**
+     * 添加渠道，字典[pail.channel]
+     */
+    private Integer channel;
     /**
      * 发送者
      */
@@ -33,7 +37,7 @@ public class Pair implements Serializable {
      */
     private String content;
     /**
-     * 状态：1发送2同意3拒绝
+     * 状态：0已送达1同意2拒绝，字典[pail.status]
      */
     private Integer status;
     /**

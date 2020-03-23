@@ -8,15 +8,15 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * (Message)实体类
+ * 消息表(Message)实体类
  *
  * @author cjh
- * @since 2020-02-27 17:43:53
+ * @since 2020-03-23 11:33:37
  */
 @Data
 @TableName("message")
 public class Message implements Serializable {
-    private static final long serialVersionUID = 426338729184131110L;
+    private static final long serialVersionUID = 323348913997648462L;
     
     @TableId
     private Integer id;
@@ -29,7 +29,7 @@ public class Message implements Serializable {
      */
     private Integer recipient;
     /**
-     * 消息类型，字典[message_type]
+     * 消息类型，字典[message.type]
      */
     private Integer messageType;
     /**
@@ -37,9 +37,9 @@ public class Message implements Serializable {
      */
     private String content;
     /**
-     * 已读
+     * 状态：0未读1已读2已撤回，字典[message.status]
      */
-    private Integer read;
+    private Integer status;
     /**
      * 创建时间
      */
