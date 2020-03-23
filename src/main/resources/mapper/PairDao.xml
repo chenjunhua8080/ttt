@@ -23,7 +23,7 @@
   </select>
 
   <select id="selectPairIds" resultType="java.lang.Integer">
-    select recipient from pair where data_level = 1 and status = 1 and sender = #{userId}
+    select recipient from pair where data_level = 1 and status = 1 and (sender = #{userId} or recipient = #{userId})
   </select>
 
   <select id="selectStatus" resultType="java.lang.Integer">
