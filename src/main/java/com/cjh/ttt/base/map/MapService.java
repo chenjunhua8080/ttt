@@ -83,7 +83,7 @@ public class MapService {
      *     <p>
      *     https://blog.csdn.net/jk940438163/article/details/83147557#commentsedit
      */
-    public static double getDistance(double lngA, double latA, double lngB, double latB) {
+    public double getDistance(double lngA, double latA, double lngB, double latB) {
         Point2D pointA = new Double(lngA, latA);
         Point2D pointB = new Double(lngB, latB);
         // 经纬度（角度）转弧度。弧度用作参数，以调用Math.cos和Math.sin
@@ -108,7 +108,7 @@ public class MapService {
         return EARTH_RADIUS * acos;
     }
 
-    public static double getDistance(String lngA, String latA, String lngB, String latB) {
+    public double getDistance(String lngA, String latA, String lngB, String latB) {
         return getDistance(
             java.lang.Double.parseDouble(lngA),
             java.lang.Double.parseDouble(latA),

@@ -33,52 +33,56 @@
   <select id="selectBySexAndBirthday" resultType="com.cjh.ttt.entity.User">
     select tt.*
     from (
-           select *
-           from user
-           where data_level = 1
-             and sex = #{sex}
-             and birthday = #{birthday}
-            <if test="ids != null and ids.size() > 0">
-              and id not in
-              <foreach collection="ids" separator="," open="(" close=")" item="item">
-                #{item}
-              </foreach>
-            </if>
-           order by id
-         ) tt
-  </select>
-
-  <select id="selectBySexAndNearByBirthday" resultType="com.cjh.ttt.entity.User">
-    select tt.*
-    from (
-           select *
-           from user
-           where data_level = 1
-             and (
-               date_format(birthday, 'MM-dd') = date_format(#{birthday}, 'MM-dd')
-               or
-               to_days(birthday) between to_days(#{birthday}) - 365 and to_days(#{birthday}) + 365
-             )
-             and sex = #{sex}
-            <if test="ids != null and ids.size() > 0">
-              and id not in
-              <foreach collection="ids" separator="," open="(" close=")" item="item">
-                #{item}
-              </foreach>
-            </if>
-         ) tt
-  </select>
-
-  <select id="selectByAddress" resultType="com.cjh.ttt.entity.User">
     select *
     from user
     where data_level = 1
+    and sex = #{sex}
+    and birthday = #{birthday}
     <if test="ids != null and ids.size() > 0">
       and id not in
       <foreach collection="ids" separator="," open="(" close=")" item="item">
         #{item}
       </foreach>
     </if>
+    order by id
+    ) tt
+  </select>
+
+  <select id="selectBySexAndNearByBirthday" resultType="com.cjh.ttt.entity.User">
+    select tt.*
+    from (
+    select *
+    from user
+    where data_level = 1
+    and (
+    date_format(birthday, 'MM-dd') = date_format(#{birthday}, 'MM-dd')
+    or
+    to_days(birthday) between to_days(#{birthday}) - 365 and to_days(#{birthday}) + 365
+    )
+    and sex = #{sex}
+    <if test="ids != null and ids.size() > 0">
+      and id not in
+      <foreach collection="ids" separator="," open="(" close=")" item="item">
+        #{item}
+      </foreach>
+    </if>
+    ) tt
+  </select>
+
+  <select id="selectByDistance" resultType="com.cjh.ttt.entity.User">
+      select u.*,
+             ACOS(
+                   COS(RADIANS(lat)) * COS(RADIANS(#{lat})) * COS(RADIANS(lng - #{lng}))
+                 + SIN(RADIANS(lat)) * SIN(RADIANS(#{lat}))
+               ) * 6371393 distance
+      from user u right join address a on u.id = a.user_id and a.id is not null
+      <if test="ids != null and ids.size() > 0">
+        where u.id not in
+        <foreach collection="ids" separator="," open="(" close=")" item="item">
+          #{item}
+        </foreach>
+      </if>
+      order by distance
   </select>
 
 </mapper>

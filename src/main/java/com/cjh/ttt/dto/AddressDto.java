@@ -46,6 +46,6 @@ public class AddressDto implements Serializable {
     /**
      * 距离
      */
-    private String distance;
+    private Long distance;
 
 }

@@ -61,7 +61,10 @@ public interface UserDao extends BaseMapper<User> {
         @Param("ids") List<Integer> ids);
 
     /**
-     * 分页查询
+     * 根据距离查询
      */
-    IPage<User> selectByAddress(@Param("page") Page<User> page, @Param("ids") List<Integer> ids);
+    IPage<User> selectByDistance(@Param("page") Page<User> page,
+        @Param("lng") String lng,
+        @Param("lat") String lat,
+        @Param("ids") List<Integer> ids);
 }

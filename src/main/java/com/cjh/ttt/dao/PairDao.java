@@ -34,8 +34,4 @@ public interface PairDao extends BaseMapper<Pair> {
      */
     Pair selectBySenderAndRecipient(@Param("sender") Integer sender, @Param("recipient") Integer recipient);
 
-    /**
-     * 根据距离查询
-     */
-    IPage<User> selectByDistance(@Param("lng") String lng, @Param("lat") String lat);
 }

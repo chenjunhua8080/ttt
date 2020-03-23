@@ -2,6 +2,7 @@ package com.cjh.ttt.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cjh.ttt.entity.Address;
+import com.cjh.ttt.request.AddressRequest;
 
 /**
  * 地址表(Address)表服务接口
@@ -19,4 +20,8 @@ public interface AddressService extends IService<Address> {
      */
     boolean deleteById(Integer id);
 
+    /**
+     * 修改用户定位
+     */
+    void update(AddressRequest addressRequest);
 }

@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cjh.ttt.entity.Address;
+import com.cjh.ttt.request.AddressRequest;
 import com.cjh.ttt.service.AddressService;
 import java.io.Serializable;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,25 +58,15 @@ public class AddressController {
     }
 
     /**
-     * 新增数据
-     *
-     * @param address 实体对象
-     * @return 新增结果
-     */
-    @PostMapping("/insert")
-    public R insert(@RequestBody Address address) {
-        return R.ok(addressService.save(address));
-    }
-
-    /**
      * 修改数据
      *
-     * @param address 实体对象
+     * @param addressRequest 实体对象
      * @return 修改结果
      */
     @PostMapping("/update")
-    public R update(@RequestBody Address address) {
-        return R.ok(addressService.updateById(address));
+    public R update(@Valid @RequestBody AddressRequest addressRequest) {
+        addressService.update(addressRequest);
+        return R.ok("修改成功");
     }
 
     /**

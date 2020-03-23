@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cjh.ttt.base.error.ErrorEnum;
 import com.cjh.ttt.base.error.ServiceException;
+import com.cjh.ttt.base.map.MapService;
 import com.cjh.ttt.base.token.UserContext;
 import com.cjh.ttt.dao.AddressDao;
 import com.cjh.ttt.dao.PairDao;
 import com.cjh.ttt.dao.UserDao;
+import com.cjh.ttt.dto.AddressDto;
 import com.cjh.ttt.dto.PairDto;
 import com.cjh.ttt.dto.UserDto;
 import com.cjh.ttt.entity.Address;
@@ -18,7 +20,10 @@ import com.cjh.ttt.enums.PairStatusEnum;
 import com.cjh.ttt.enums.PairTypeEnum;
 import com.cjh.ttt.request.PairingRequest;
 import com.cjh.ttt.service.PairService;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,6 +45,7 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
 
     private UserDao userDao;
     private AddressDao addressDao;
+    private MapService mapService;
 
     @Override
     public PairDto getPairList(Page<User> page, Integer type) {
@@ -62,6 +68,7 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
         //根据类型查询
         PairTypeEnum pairType = PairTypeEnum.from(type);
         IPage<User> pages;
+        assert pairType != null;
         switch (pairType) {
             case PAIR_TYPE_1:
                 pages = userDao.selectBySexAndBirthday(page, sex, user.getBirthday(), ids);
@@ -70,7 +77,7 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
                 pages = userDao.selectBySexAndNearByBirthday(page, sex, user.getBirthday(), ids);
                 break;
             case PAIR_TYPE_3:
-                pages = selectByAddress(userId);
+                pages = selectByAddress(page, userId);
                 break;
             default:
                 return null;
@@ -82,6 +89,22 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
             BeanUtils.copyProperties(source, userBean);
             return userBean;
         }).collect(Collectors.toList());
+        //离我最近，调用地图查询距离
+        if (pairType.getCode() == PairTypeEnum.PAIR_TYPE_3.getCode()) {
+            Address userAddress = addressDao.selectByUserId(userId);
+            for (UserDto userDto : userBeanList) {
+                Address address = addressDao.selectByUserId(userDto.getId());
+                AddressDto addressDto = new AddressDto();
+                BeanUtils.copyProperties(address, addressDto);
+                addressDto.setDistance(
+                    Math.round(mapService.getDistance(
+                        userAddress.getLng(), userAddress.getLat(),
+                        address.getLng(), address.getLat()
+                    ))
+                );
+                userDto.setAddress(addressDto);
+            }
+        }
         PairDto dto = new PairDto();
         Page<UserDto> pageData = new Page<>();
         BeanUtils.copyProperties(pages, pageData);
@@ -96,7 +119,7 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
     /**
      * 根据坐标查询离得最近的人
      */
-    private IPage<User> selectByAddress(Integer userId) {
+    private IPage<User> selectByAddress(Page<User> page, Integer userId) {
         Address address = addressDao.selectByUserId(userId);
         if (address == null) {
             throw new ServiceException(ErrorEnum.SEX_NOT_SET);
@@ -104,7 +127,7 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
         String lng = address.getLng();
         String lat = address.getLat();
 
-        return baseMapper.selectByDistance(lng, lat);
+        return userDao.selectByDistance(page, lng, lat, Collections.singletonList(userId));
     }
 
     @Override

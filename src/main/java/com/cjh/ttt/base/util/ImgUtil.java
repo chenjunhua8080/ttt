@@ -91,7 +91,7 @@ public class ImgUtil {
     public static String getResultPath(String fileName) {
         String doMain = "http://images.springeasy.cn";
         if (ImgUtil.isWindows()) {
-            doMain = "http://192.168.1.76";
+            doMain = "http://127.0.0.1";
         }
         String filePath = "/ttt/";
         return doMain + filePath + fileName;
