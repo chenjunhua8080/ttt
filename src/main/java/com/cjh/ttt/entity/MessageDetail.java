@@ -8,41 +8,37 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 配对表(Pair)实体类
+ * 消息内容表(MessageDetail)实体类
  *
  * @author cjh
  * @since 2020-03-25 18:21:23
  */
 @Data
-@TableName("pair")
-public class Pair implements Serializable {
+@TableName("messageDetail")
+public class MessageDetail implements Serializable {
 
-    private static final long serialVersionUID = 274559096237355335L;
-    
+    private static final long serialVersionUID = -14551117016306983L;
+
     @TableId
     private Integer id;
     /**
-     * 添加渠道，字典[pail.channel]
+     * 消息id
      */
-    private Integer channel;
+    private Integer messageId;
     /**
-     * 发送者
+     * 是否发送者：0否1是
      */
-    private Integer sender;
+    private Integer isSender;
     /**
-     * 接收者
+     * 消息类型，字典[message.type]
      */
-    private Integer recipient;
-    /**
-     * 解除者
-     */
-    private Integer relive;
+    private Integer messageType;
     /**
      * 内容
      */
     private String content;
     /**
-     * 状态：0已送达1同意2拒绝3解除，字典[pail.status]
+     * 状态：0未读1已读2已撤回，字典[message.status]
      */
     private Integer status;
     /**

@@ -1,7 +1,7 @@
 package com.cjh.ttt.entity;
 
-import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
@@ -11,35 +11,28 @@ import lombok.Data;
  * 消息表(Message)实体类
  *
  * @author cjh
- * @since 2020-03-23 11:33:37
+ * @since 2020-03-25 18:21:22
  */
 @Data
 @TableName("message")
 public class Message implements Serializable {
-    private static final long serialVersionUID = 323348913997648462L;
-    
+
+    private static final long serialVersionUID = 846811084990701890L;
+
     @TableId
     private Integer id;
     /**
-     * 发送者
+     * 用户id
      */
-    private Integer sender;
+    private Integer userId;
     /**
-     * 接收者
+     * 对方id，现实用户id，可能发展成群聊~
      */
-    private Integer recipient;
+    private Integer targetId;
     /**
-     * 消息类型，字典[message.type]
+     * 对方类型：1用户2群聊
      */
-    private Integer messageType;
-    /**
-     * 内容
-     */
-    private String content;
-    /**
-     * 状态：0未读1已读2已撤回，字典[message.status]
-     */
-    private Integer status;
+    private Integer targetType;
     /**
      * 创建时间
      */
@@ -51,6 +44,7 @@ public class Message implements Serializable {
     /**
      * 数据级别 0无效 1有效
      */
+    @TableLogic
     private Integer dataLevel;
 
 }

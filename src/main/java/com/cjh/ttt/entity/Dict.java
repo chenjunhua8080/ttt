@@ -1,22 +1,23 @@
 package com.cjh.ttt.entity;
 
-import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
 /**
- * (Dict)实体类
+ * 字典表(Dict)实体类
  *
  * @author cjh
- * @since 2020-02-27 17:43:52
+ * @since 2020-03-25 18:21:22
  */
 @Data
 @TableName("dict")
 public class Dict implements Serializable {
-    private static final long serialVersionUID = 757662798226164275L;
+
+    private static final long serialVersionUID = -44615194047459321L;
     
     @TableId
     private Integer id;
@@ -43,6 +44,7 @@ public class Dict implements Serializable {
     /**
      * 数据级别 0删除 1正常
      */
+    @TableLogic
     private Integer dataLevel;
 
 }

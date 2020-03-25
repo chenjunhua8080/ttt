@@ -1,15 +1,15 @@
 package com.cjh.ttt.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.cjh.ttt.entity.Message;
+import com.cjh.ttt.entity.MessageDetail;
 
 /**
- * 消息表(Message)表服务接口
+ * 消息内容表(MessageDetail)表服务接口
  *
  * @author cjh
- * @since 2020-03-25 18:16:48
+ * @since 2020-03-25 18:16:50
  */
-public interface MessageService extends IService<Message> {
+public interface MessageDetailService extends IService<MessageDetail> {
 
     /**
      * 通过主键删除数据

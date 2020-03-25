@@ -1,7 +1,7 @@
 package com.cjh.ttt.entity;
 
-import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
@@ -11,12 +11,13 @@ import lombok.Data;
  * 地址表(Address)实体类
  *
  * @author cjh
- * @since 2020-03-19 15:41:08
+ * @since 2020-03-25 18:21:21
  */
 @Data
 @TableName("address")
 public class Address implements Serializable {
-    private static final long serialVersionUID = -57982087815704871L;
+
+    private static final long serialVersionUID = 718071438916238816L;
     
     @TableId
     private Integer id;
@@ -63,6 +64,7 @@ public class Address implements Serializable {
     /**
      * 数据级别 0删除 1正常
      */
+    @TableLogic
     private Integer dataLevel;
 
 }
