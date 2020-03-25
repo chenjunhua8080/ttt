@@ -49,4 +49,9 @@ public interface PairService extends IService<Pair> {
      * [同意/拒绝]配对
      */
     void updateStatus(Integer sender, Integer status);
+
+    /**
+     * 解除配对
+     */
+    void relieve(Integer userId);
 }

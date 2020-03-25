@@ -31,6 +31,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * (Pair)表服务实现类
@@ -227,6 +228,22 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
     public void updateStatus(Integer sender, Integer status) {
         Integer recipient = UserContext.getUserId();
         baseMapper.updateStatus(sender, recipient, status);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void relieve(Integer userId) {
+        Integer id = UserContext.getUserId();
+        Pair pair = baseMapper.selectBySenderAndRecipient(id, userId);
+        if (pair == null) {
+            return;
+        }
+        pair.setStatus(PairStatusEnum.RELIEVE.getCode());
+        pair.setRelive(id);
+        pair.setUpdateTime(new Date());
+        baseMapper.updateById(pair);
+
+        //TODO 移除聊天列表
     }
 
 }

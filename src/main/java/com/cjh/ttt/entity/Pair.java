@@ -11,12 +11,12 @@ import lombok.Data;
  * 配对表(Pair)实体类
  *
  * @author cjh
- * @since 2020-03-23 11:33:37
+ * @since 2020-03-25 17:46:47
  */
 @Data
 @TableName("pair")
 public class Pair implements Serializable {
-    private static final long serialVersionUID = -46890561554429117L;
+    private static final long serialVersionUID = -83045770098174300L;
     
     @TableId
     private Integer id;
@@ -33,11 +33,15 @@ public class Pair implements Serializable {
      */
     private Integer recipient;
     /**
+     * 解除者
+     */
+    private Integer relive;
+    /**
      * 内容
      */
     private String content;
     /**
-     * 状态：0已送达1同意2拒绝，字典[pail.status]
+     * 状态：0已送达1同意2拒绝3解除，字典[pail.status]
      */
     private Integer status;
     /**

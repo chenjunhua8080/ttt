@@ -19,6 +19,7 @@ public enum PairStatusEnum {
     WAIT(0, "已送达"),
     SUCCESS(1, "成功"),
     FAIL(2, "失败"),
+    RELIEVE(3, "已解除"),
     ;
 
     private int code;

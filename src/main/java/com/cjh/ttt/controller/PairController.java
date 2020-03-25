@@ -8,6 +8,7 @@ import com.cjh.ttt.entity.Pair;
 import com.cjh.ttt.entity.User;
 import com.cjh.ttt.request.PairUpdateRequest;
 import com.cjh.ttt.request.PairingRequest;
+import com.cjh.ttt.request.UserIdRequest;
 import com.cjh.ttt.service.PairService;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -64,6 +65,16 @@ public class PairController {
     public R update(@Valid @RequestBody PairUpdateRequest pairUpdateRequest) {
         pairService.updateStatus(pairUpdateRequest.getSender(),pairUpdateRequest.getStatus());
         return R.ok("操作成功");
+    }
+
+
+    /**
+     * 解除配对
+     */
+    @PostMapping("/relieve")
+    public R relieve(@Valid @RequestBody UserIdRequest UserIdRequest) {
+        pairService.relieve(UserIdRequest.getUserId());
+        return R.ok("解除成功");
     }
 
     /**
