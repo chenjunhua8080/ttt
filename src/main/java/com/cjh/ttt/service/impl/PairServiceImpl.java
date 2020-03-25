@@ -7,11 +7,14 @@ import com.cjh.ttt.base.error.ErrorEnum;
 import com.cjh.ttt.base.error.ServiceException;
 import com.cjh.ttt.base.map.MapService;
 import com.cjh.ttt.base.token.UserContext;
+import com.cjh.ttt.base.util.StringReplaceUtil;
 import com.cjh.ttt.dao.AddressDao;
 import com.cjh.ttt.dao.PairDao;
 import com.cjh.ttt.dao.UserDao;
 import com.cjh.ttt.dto.AddressDto;
 import com.cjh.ttt.dto.PairDto;
+import com.cjh.ttt.dto.PairSuccessDto;
+import com.cjh.ttt.dto.PairSuccessDto.PairUserBean;
 import com.cjh.ttt.dto.UserDto;
 import com.cjh.ttt.entity.Address;
 import com.cjh.ttt.entity.Pair;
@@ -180,6 +183,50 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
     @Override
     public int check(Integer id) {
         return baseMapper.countPairSuccess(id);
+    }
+
+    @Override
+    public IPage<PairSuccessDto> getPairSuccessList(Page<Pair> page) {
+        //分页查询
+        IPage<Pair> iPage = baseMapper.getPairSuccessList(page);
+        //封装数据
+        IPage<PairSuccessDto> pages = new Page<>();
+        BeanUtils.copyProperties(iPage, pages);
+        List<PairSuccessDto> records = new ArrayList<>();
+        PairSuccessDto dto;
+        PairUserBean sender;
+        PairUserBean recipient;
+        User user;
+        for (Pair pair : iPage.getRecords()) {
+            dto = new PairSuccessDto();
+
+            sender = new PairUserBean();
+            user = userDao.selectById(pair.getSender());
+            BeanUtils.copyProperties(user, sender);
+            sender.setNickname(StringReplaceUtil.userNameReplaceWithStar(sender.getNickname()));
+            dto.setSender(sender);
+
+            recipient = new PairUserBean();
+            user = userDao.selectById(pair.getRecipient());
+            BeanUtils.copyProperties(user, recipient);
+            recipient.setNickname(StringReplaceUtil.userNameReplaceWithStar(recipient.getNickname()));
+            dto.setRecipient(recipient);
+
+            records.add(dto);
+        }
+        pages.setRecords(records);
+        return pages;
+    }
+
+    @Override
+    public List<UserDto> getNewPairList(Integer userId) {
+        return baseMapper.getNewPairList(userId);
+    }
+
+    @Override
+    public void updateStatus(Integer sender, Integer status) {
+        Integer recipient = UserContext.getUserId();
+        baseMapper.updateStatus(sender, recipient, status);
     }
 
 }

@@ -3,7 +3,10 @@ package com.cjh.ttt.controller;
 
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cjh.ttt.base.token.UserContext;
+import com.cjh.ttt.entity.Pair;
 import com.cjh.ttt.entity.User;
+import com.cjh.ttt.request.PairUpdateRequest;
 import com.cjh.ttt.request.PairingRequest;
 import com.cjh.ttt.service.PairService;
 import javax.validation.Valid;
@@ -30,7 +33,7 @@ public class PairController {
     private PairService pairService;
 
     /**
-     * 获取配对列表
+     * 获取匹配列表
      */
     @GetMapping("/list")
     public R list(Page<User> page, Integer type) {
@@ -54,4 +57,29 @@ public class PairController {
         return R.ok("发送成功");
     }
 
+    /**
+     * [同意/拒绝]配对
+     */
+    @PostMapping("/update")
+    public R update(@Valid @RequestBody PairUpdateRequest pairUpdateRequest) {
+        pairService.updateStatus(pairUpdateRequest.getSender(),pairUpdateRequest.getStatus());
+        return R.ok("操作成功");
+    }
+
+    /**
+     * 查询待我同意的配对列表
+     */
+    @GetMapping("/getNewPairList")
+    public R getNewPairList() {
+        Integer userId = UserContext.getUserId();
+        return R.ok(pairService.getNewPairList(userId));
+    }
+
+    /**
+     * 配对成功列表公告
+     */
+    @GetMapping("/getOkPairList")
+    public R getPairSuccessList(Page<Pair> page) {
+        return R.ok(pairService.getPairSuccessList(page));
+    }
 }

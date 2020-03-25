@@ -1,6 +1,9 @@
 package com.cjh.ttt.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cjh.ttt.dto.UserDto;
 import com.cjh.ttt.entity.Pair;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -42,4 +45,24 @@ public interface PairDao extends BaseMapper<Pair> {
      * 查询匹配状态
      */
     Integer selectStatus(@Param("sender") Integer sender, @Param("recipient") Integer recipient);
+
+    /**
+     * 分页查询成功配对列表
+     */
+    IPage<Pair> getPairSuccessList(Page<Pair> page);
+
+    /**
+     * 查询用户待确认配对列表
+     */
+    List<UserDto> getNewPairList(Integer userId);
+
+    /**
+     * 统计配对记录
+     */
+    int countPairHistory(@Param("id") Integer id, @Param("userId") Integer userId);
+
+    /**
+     * 修改配对状态
+     */
+    void updateStatus(@Param("sender") Integer sender, @Param("recipient") Integer recipient, @Param("status") Integer status);
 }

@@ -12,6 +12,7 @@ import com.cjh.ttt.base.redis.RedisKeys;
 import com.cjh.ttt.base.redis.RedisService;
 import com.cjh.ttt.base.token.UserContext;
 import com.cjh.ttt.dao.AddressDao;
+import com.cjh.ttt.dao.PairDao;
 import com.cjh.ttt.dao.UserDao;
 import com.cjh.ttt.dto.AddressDto;
 import com.cjh.ttt.dto.TokenDto;
@@ -43,6 +44,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     private TouTiaoApiService touTiaoApiService;
     private AddressDao addressDao;
     private MapService mapService;
+    private PairDao pairDao;
 
     /**
      * 通过主键删除数据
@@ -144,6 +146,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Override
     public UserDto info(Integer userId) {
+        //权限限制
+        canUseInfo(userId);
+
         //查询用户
         UserDto userDto = new UserDto();
         User user = baseMapper.selectById(userId);
@@ -156,6 +161,22 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         userDto.setAddress(addressDto);
 
         return userDto;
+    }
+
+    /**
+     * 能否查询用户信息
+     */
+    private void canUseInfo(Integer userId) {
+        Integer id = UserContext.getUserId();
+        //是否自己
+        if (id.equals(userId)) {
+            return;
+        }
+        //是否有配对关系，不管成功与否
+        int count = pairDao.countPairHistory(id, userId);
+        if (count == 0) {
+            throw new ServiceException(ErrorEnum.ERROR_412);
+        }
     }
 
 }

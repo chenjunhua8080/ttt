@@ -18,6 +18,7 @@ public enum ErrorEnum {
      */
     ERROR_500(500, "服务器异常"),
     ERROR_404(404, "api不存在"),
+    ERROR_412(412, "没有权限"),
     TOKEN_NULL(10001, "token 不能为空"),
     TOKEN_EXPIRE(10002, "token 已过期"),
     PHONE_BIND_ED(10003, "手机号已绑定其他用户"),

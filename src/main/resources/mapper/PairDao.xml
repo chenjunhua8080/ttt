@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cjh.ttt.dao.PairDao">
+  <update id="updateStatus">
+    update pair set status = #{status} where data_level = 1 and sender = #{sender} and recipient = #{recipient}
+  </update>
 
   <!--通过主键删除-->
   <delete id="deleteById">
@@ -30,6 +33,26 @@
 
   <select id="selectStatus" resultType="java.lang.Integer">
     select status from pair where data_level = 1 and sender = #{sender} and recipient = #{recipient}
+  </select>
+
+  <select id="getPairSuccessList" resultType="com.cjh.ttt.entity.Pair">
+    select sender,recipient from pair where data_level = 1 and status = 1
+  </select>
+
+  <select id="getNewPairList" resultType="com.cjh.ttt.dto.UserDto">
+    select u.id,u.avatar
+    from pair p left join user u on u.id = p.recipient and u.data_level = 1
+    where p.data_level = 1 and p.status = 0
+  </select>
+
+  <select id="countPairHistory" resultType="java.lang.Integer">
+    select count(1) from pair
+    where data_level = 1
+    and (
+        (sender = #{id} and recipient = #{userId})
+        or
+        (sender = #{userId} and recipient = #{id})
+    )
   </select>
 
 </mapper>

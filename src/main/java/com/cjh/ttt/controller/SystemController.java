@@ -35,15 +35,14 @@ public class SystemController {
     private DictService dictService;
 
     /**
-     * 分页查询所有字典
+     * 列表
      *
-     * @param page 分页对象
      * @param dict 查询实体
      * @return 所有数据
      */
-    @GetMapping("/dict/getListByType")
-    public R selectAll(Page<Dict> page, Dict dict) {
-        return R.ok(dictService.page(page, new QueryWrapper<>(dict)));
+    @GetMapping("/dict/list")
+    public R selectAll(Dict dict) {
+        return R.ok(dictService.list(new QueryWrapper<>(dict)));
     }
 
     /**
@@ -53,7 +52,7 @@ public class SystemController {
      * @param key  字典key
      * @return 单条数据
      */
-    @GetMapping("/dict/getValueByTypeAndKey")
+    @GetMapping("/dict/value")
     public R getValueByTypeAndKey(@RequestParam String type, @RequestParam Integer key) {
         return R.ok(dictService.getValueByTypeAndKey(type, key));
     }
