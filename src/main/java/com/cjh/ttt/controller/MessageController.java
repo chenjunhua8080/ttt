@@ -1,17 +1,15 @@
 package com.cjh.ttt.controller;
 
 
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cjh.ttt.entity.Message;
+import com.cjh.ttt.dto.MessageDetailDto;
+import com.cjh.ttt.dto.MessageDto;
+import com.cjh.ttt.request.MessageRequest;
 import com.cjh.ttt.service.MessageService;
-import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,64 +25,67 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping("/message")
+@RequestMapping("/msg")
 public class MessageController {
 
     private MessageService messageService;
 
     /**
-     * 分页查询所有数据
+     * 我的会话列表
      *
      * @param page 分页对象
-     * @param message 查询实体
-     * @return 所有数据
      */
-    @GetMapping("/page")
-    public R selectAll(Page<Message> page, Message message) {
-        return R.ok(messageService.page(page, new QueryWrapper<>(message)));
+    @GetMapping("/list")
+    public R list(Page<MessageDto> page) {
+        return R.ok(messageService.getMessageList(page));
     }
 
     /**
-     * 通过主键查询单条数据
+     * 会话明细
      *
-     * @param id 主键
-     * @return 单条数据
+     * @param messageId 主键
+     * @param page      分页对象
      */
-    @GetMapping("/{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return R.ok(messageService.getById(id));
+    @GetMapping("/detail/list")
+    public R info(Page<MessageDetailDto> page, @RequestParam("messageId") Integer messageId) {
+        return R.ok(messageService.getDetailList(page, messageId));
     }
 
     /**
-     * 新增数据
-     *
-     * @param message 实体对象
-     * @return 新增结果
-     */
-    @PostMapping("/insert")
-    public R insert(@RequestBody Message message) {
-        return R.ok(messageService.save(message));
-    }
-
-    /**
-     * 修改数据
-     *
-     * @param message 实体对象
-     * @return 修改结果
-     */
-    @PostMapping("/update")
-    public R update(@RequestBody Message message) {
-        return R.ok(messageService.updateById(message));
-    }
-
-    /**
-     * 删除数据
-     *
-     * @param id 主键
-     * @return 删除结果
+     * 删除会话
      */
     @PostMapping("delete")
-    public R delete(@RequestParam("id") Serializable id) {
-        return R.ok(messageService.removeById(id));
+    public R delete(@RequestBody MessageRequest messageRequest) {
+        messageService.delete(messageRequest.getMessageId());
+        return R.ok("删除成功");
     }
+
+    /**
+     * 删除消息明细
+     */
+    @PostMapping("/detail/delete")
+    public R deleteMessageDetail(@RequestBody MessageRequest messageRequest) {
+        messageService.deleteMessageDetail(messageRequest.getMessageDetailId());
+        return R.ok("删除成功");
+    }
+
+
+    /**
+     * 撤回消息
+     */
+    @PostMapping("/detail/withdraw")
+    public R withdraw(@RequestBody MessageRequest messageRequest) {
+        messageService.withdraw(messageRequest.getMessageDetailId());
+        return R.ok("撤回成功");
+    }
+
+    /**
+     * 发送消息
+     */
+    @PostMapping("/send")
+    public R send(@RequestBody MessageRequest messageRequest) {
+        messageService.send(messageRequest.getMessageId(),messageRequest.getContent());
+        return R.ok("已送达");
+    }
+
 }

@@ -2,11 +2,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cjh.ttt.dao.MessageDetailDao">
 
-  <!--通过主键删除-->
-  <delete id="deleteById">
-    delete
-    from ttt.dict
-    where id = #{id}
-  </delete>
+  <select id="selectLastMessage" resultType="com.cjh.ttt.entity.MessageDetail">
+    select tt.*
+    from (
+           select *
+           from message_detail
+           where data_level = 1
+             and message_id = #{messageId}
+           order by id desc
+         ) tt
+    limit 1
+  </select>
+
+  <select id="getMessageDetailList" resultType="com.cjh.ttt.dto.MessageDetailDto">
+    select *
+    from message_detail
+    where data_level = 1
+      and message_id = 1
+    order by id desc
+  </select>
+
+  <select id="countUnread" resultType="java.lang.Integer">
+    select count(1) from message_detail
+    where data_level = 1 and is_sender = 0 and status = 0
+    and message_id = #{messageId}
+  </select>
 
 </mapper>

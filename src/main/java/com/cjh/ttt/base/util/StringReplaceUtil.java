@@ -87,9 +87,4 @@ public class StringReplaceUtil {
         return username.replaceAll(regular, "*");
     }
 
-
-    public static void main(String[] args) {
-        System.out.println(userNameReplaceWithStar("正则匹配"));
-        ;
-    }
 }

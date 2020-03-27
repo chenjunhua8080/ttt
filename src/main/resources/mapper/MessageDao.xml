@@ -2,11 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cjh.ttt.dao.MessageDao">
 
-  <!--通过主键删除-->
-  <delete id="deleteById">
-    delete
-    from ttt.dict
-    where id = #{id}
-  </delete>
+  <select id="getMessageList" resultType="com.cjh.ttt.dto.MessageDto">
+    select distinct tt.id
+    from (
+           select distinct t.id, md.create_time
+           from message t
+                  left join message_detail md on t.id = md.message_id and md.data_level = 1
+           where t.data_level = 1
+             and t.user_id = #{userId}
+           order by md.create_time desc
+         ) tt
+  </select>
+
+  <select id="selectByUserAndTarget" resultType="com.cjh.ttt.entity.Message">
+    select *
+    from message
+    where data_level = 1
+      and user_id = #{userId} and target_id = #{targetId};
+  </select>
 
 </mapper>

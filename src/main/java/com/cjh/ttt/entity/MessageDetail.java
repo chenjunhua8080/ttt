@@ -1,5 +1,6 @@
 package com.cjh.ttt.entity;
 
+import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -11,20 +12,23 @@ import lombok.Data;
  * 消息内容表(MessageDetail)实体类
  *
  * @author cjh
- * @since 2020-03-25 18:21:23
+ * @since 2020-03-27 17:15:33
  */
 @Data
 @TableName("messageDetail")
 public class MessageDetail implements Serializable {
-
-    private static final long serialVersionUID = -14551117016306983L;
-
+    private static final long serialVersionUID = 151771246222168340L;
+    
     @TableId
     private Integer id;
     /**
      * 消息id
      */
     private Integer messageId;
+    /**
+     * 对方消息id
+     */
+    private Integer targetDetailId;
     /**
      * 是否发送者：0否1是
      */
