@@ -9,16 +9,22 @@ import com.cjh.ttt.base.map.MapService;
 import com.cjh.ttt.base.token.UserContext;
 import com.cjh.ttt.base.util.StringReplaceUtil;
 import com.cjh.ttt.dao.AddressDao;
+import com.cjh.ttt.dao.MessageDao;
+import com.cjh.ttt.dao.MessageDetailDao;
 import com.cjh.ttt.dao.PairDao;
 import com.cjh.ttt.dao.UserDao;
 import com.cjh.ttt.dto.AddressDto;
+import com.cjh.ttt.dto.MessageDetailDto;
 import com.cjh.ttt.dto.PairDto;
 import com.cjh.ttt.dto.PairSuccessDto;
 import com.cjh.ttt.dto.PairSuccessDto.PairUserBean;
 import com.cjh.ttt.dto.UserDto;
 import com.cjh.ttt.entity.Address;
+import com.cjh.ttt.entity.Message;
+import com.cjh.ttt.entity.MessageDetail;
 import com.cjh.ttt.entity.Pair;
 import com.cjh.ttt.entity.User;
+import com.cjh.ttt.enums.MessageTypeEnum;
 import com.cjh.ttt.enums.PairStatusEnum;
 import com.cjh.ttt.enums.PairTypeEnum;
 import com.cjh.ttt.request.PairingRequest;
@@ -47,6 +53,8 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
     private UserDao userDao;
     private AddressDao addressDao;
     private MapService mapService;
+    private MessageDao messageDao;
+    private MessageDetailDao messageDetailDao;
 
     @Override
     public PairDto getPairList(Page<User> page, Integer type) {
@@ -144,10 +152,12 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
         return userDao.selectByDistance(page, lng, lat, ids);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void pairing(PairingRequest pairingRequest) {
         Integer userId = UserContext.getUserId();
         Integer pairUserId = pairingRequest.getId();
+        //检查配对关系
         Pair oldPair = baseMapper.selectBySenderAndRecipient(userId, pairUserId);
         if (oldPair != null) {
             if (PairStatusEnum.SUCCESS.getCode() == oldPair.getStatus()) {
@@ -157,14 +167,18 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
                 if (oldPair.getSender().equals(userId)) {
                     throw new ServiceException(ErrorEnum.PAIR_SEND_ED);
                 } else {
-                    //如果是对方先发起的配对，直接成功
+                    //配对中，如果是对方发起的配对，直接成功
                     oldPair.setStatus(PairStatusEnum.SUCCESS.getCode());
                     oldPair.setUpdateTime(new Date());
                     baseMapper.updateById(oldPair);
+
+                    //配对成功，给双方发送消息
+                    sendSystemMessage(userId, pairUserId);
+                    sendSystemMessage(pairUserId, userId);
                 }
             }
             if (PairStatusEnum.FAIL.getCode() == oldPair.getStatus()) {
-                //重新发起配对
+                //配对被拒绝，重新发起配对
                 oldPair.setStatus(PairStatusEnum.WAIT.getCode());
                 oldPair.setUpdateTime(new Date());
                 baseMapper.updateById(oldPair);
@@ -224,26 +238,67 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
         return baseMapper.getNewPairList(userId);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateStatus(Integer sender, Integer status) {
+        //检查配对关系
+        Integer userId = UserContext.getUserId();
+        Pair pair = baseMapper.selectBySenderAndRecipient(userId, sender);
+        if (pair == null) {
+            throw new ServiceException(ErrorEnum.ERROR_412);
+        }
+
+        //修改配对状态
         Integer recipient = UserContext.getUserId();
         baseMapper.updateStatus(sender, recipient, status);
+
+        //配对成功，给双方发送消息
+        if (status == PairStatusEnum.SUCCESS.getCode()) {
+            sendSystemMessage(userId, sender);
+            sendSystemMessage(sender, userId);
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void relieve(Integer userId) {
+        //检查配对关系
         Integer id = UserContext.getUserId();
         Pair pair = baseMapper.selectBySenderAndRecipient(id, userId);
         if (pair == null) {
-            return;
+            throw new ServiceException(ErrorEnum.ERROR_412);
         }
+
+        //解除配对关系
         pair.setStatus(PairStatusEnum.RELIEVE.getCode());
         pair.setRelive(id);
         pair.setUpdateTime(new Date());
         baseMapper.updateById(pair);
 
-        //TODO 移除聊天列表
+        //移除聊天列表
+        Message message = messageDao.selectByUserAndTarget(id, userId);
+        messageDao.deleteById(message);
     }
 
+    /**
+     * 配对成功，发送系统消息
+     */
+    private void sendSystemMessage(Integer userId, Integer targetId) {
+        //查询是否已存在会话
+        Message message = messageDao.selectByUserAndTarget(userId, targetId);
+        if (message == null) {
+            //插入新的会话
+            message = new Message();
+            message.setUserId(userId);
+            message.setTargetId(targetId);
+            messageDao.insert(message);
+        }
+        //查询消息明细
+        MessageDetail messageDetail = new MessageDetail();
+        messageDetail.setMessageType(MessageTypeEnum.SYSTEM.getCode());
+        messageDetail.setContent("配对成功~ 开始进一步深入了解对方吧^_^");
+        messageDetail.setIsSender(0);
+        messageDetail.setMessageId(message.getId());
+        messageDetailDao.insert(messageDetail);
+    }
 }

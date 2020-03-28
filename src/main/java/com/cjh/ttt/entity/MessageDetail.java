@@ -15,7 +15,7 @@ import lombok.Data;
  * @since 2020-03-27 17:15:33
  */
 @Data
-@TableName("messageDetail")
+@TableName("message_detail")
 public class MessageDetail implements Serializable {
     private static final long serialVersionUID = 151771246222168340L;
     
@@ -26,7 +26,7 @@ public class MessageDetail implements Serializable {
      */
     private Integer messageId;
     /**
-     * 对方消息id
+     * 对方消息id，[系统/解除关系]发送的消息为空
      */
     private Integer targetDetailId;
     /**

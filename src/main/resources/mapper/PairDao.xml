@@ -40,9 +40,10 @@
   </select>
 
   <select id="getNewPairList" resultType="com.cjh.ttt.dto.UserDto">
-    select u.id,u.avatar
-    from pair p left join user u on u.id = p.recipient and u.data_level = 1
+    select p.sender id,u.avatar
+    from pair p left join user u on p.sender = u.id and u.data_level = 1
     where p.data_level = 1 and p.status = 0
+    and p.recipient = #{userId}
   </select>
 
   <select id="countPairHistory" resultType="java.lang.Integer">

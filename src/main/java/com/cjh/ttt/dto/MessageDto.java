@@ -46,6 +46,6 @@ public class MessageDto implements Serializable {
     /**
      * 未读统计
      */
-    private Integer unrealCount;
+    private Integer unreadCount;
 
 }

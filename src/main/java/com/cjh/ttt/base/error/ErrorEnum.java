@@ -28,6 +28,8 @@ public enum ErrorEnum {
     PAIR_SUCCESS_ED(10007, "已配对成功"),
     MAP_ERROR(10008, "地图服务调用失败"),
     ADDRESS_NOT_SET(10009, "请先设置定位"),
+    NOT_PAIR(10010, "请先完成配对"),
+    RELIEVE_PAIR(10011, "对方已解除配对"),
     ;
 
     private int code;

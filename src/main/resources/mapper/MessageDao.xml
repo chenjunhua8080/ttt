@@ -3,9 +3,9 @@
 <mapper namespace="com.cjh.ttt.dao.MessageDao">
 
   <select id="getMessageList" resultType="com.cjh.ttt.dto.MessageDto">
-    select distinct tt.id
+    select distinct tt.id,tt.target_id
     from (
-           select distinct t.id, md.create_time
+           select distinct t.id,t.target_id, md.create_time
            from message t
                   left join message_detail md on t.id = md.message_id and md.data_level = 1
            where t.data_level = 1
