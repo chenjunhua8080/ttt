@@ -36,7 +36,7 @@ public class Pair implements Serializable {
     /**
      * 解除者
      */
-    private Integer relive;
+    private Integer relieve;
     /**
      * 内容
      */

@@ -24,6 +24,7 @@ import com.cjh.ttt.service.MessageService;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -125,6 +126,10 @@ public class MessageServiceImpl extends ServiceImpl<MessageDao, Message> impleme
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void send(Integer messageId, String content) {
+        if (StringUtils.isBlank(content)) {
+            throw new ServiceException(ErrorEnum.ERROR_413);
+        }
+
         //检查权限
         checkMessage(messageId);
 
@@ -133,19 +138,33 @@ public class MessageServiceImpl extends ServiceImpl<MessageDao, Message> impleme
         Integer userId = message.getUserId();
         Integer targetId = message.getTargetId();
 
+        //检查配对状态
+        boolean relieve = checkPair(userId, targetId);
+        //已解除配对，不给对方发送消息
+        if (relieve) {
+            //我方插入系统消息
+            MessageDetail systemMessage = new MessageDetail();
+            systemMessage.setMessageType(MessageTypeEnum.SYSTEM.getCode());
+            systemMessage.setContent("对方已解除配对，无法收到消息");
+            systemMessage.setIsSender(0);
+            systemMessage.setMessageId(messageId);
+            messageDetailDao.insert(systemMessage);
+
+            //插入我方消息
+            MessageDetail messageDetail = new MessageDetail();
+            messageDetail.setMessageId(messageId);
+            messageDetail.setContent(content);
+            messageDetail.setIsSender(1);
+            messageDetailDao.insert(messageDetail);
+            return;
+        }
+
         //插入我方消息
         MessageDetail messageDetail = new MessageDetail();
         messageDetail.setMessageId(messageId);
         messageDetail.setContent(content);
         messageDetail.setIsSender(1);
         messageDetailDao.insert(messageDetail);
-
-        //检查配对状态
-        boolean relieve = checkPair(userId, targetId);
-        //已解除配对，不给对方发送消息
-        if (relieve) {
-            return;
-        }
 
         //查询对方会话
         message = baseMapper.selectByUserAndTarget(targetId, userId);
@@ -186,13 +205,15 @@ public class MessageServiceImpl extends ServiceImpl<MessageDao, Message> impleme
 
     /**
      * 处理已读
+     *
+     * TODO 这里要加事物吗
      */
     private void setRead(List<MessageDetailDto> records) {
         ThreadUtil.getThreadPoolExecutor().execute(() -> {
             MessageDetail messageDetail = new MessageDetail();
             for (MessageDetailDto item : records) {
-                item.setId(item.getId());
-                item.setStatus(MessageStatusEnum.READ.getCode());
+                messageDetail.setId(item.getId());
+                messageDetail.setStatus(MessageStatusEnum.READ.getCode());
                 messageDetailDao.updateById(messageDetail);
             }
         });
@@ -203,7 +224,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageDao, Message> impleme
      */
     private void checkMessage(Integer messageId) {
         Message message = baseMapper.selectById(messageId);
-        if (message.getUserId().equals(UserContext.getUserId())) {
+        if (message == null || !message.getUserId().equals(UserContext.getUserId())) {
             throw new ServiceException(ErrorEnum.ERROR_412);
         }
     }

@@ -16,6 +16,10 @@ public class MessageDetailDto implements Serializable {
 
     private Integer id;
     /**
+     * 对方消息id，为空是对方已解除了
+     */
+    private Integer targetDetailId;
+    /**
      * 是否发送者：0否1是
      */
     private Integer isSender;

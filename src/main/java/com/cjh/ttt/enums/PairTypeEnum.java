@@ -19,6 +19,7 @@ public enum PairTypeEnum {
     PAIR_TYPE_1(1, "命中注定"),
     PAIR_TYPE_2(2, "专属推荐"),
     PAIR_TYPE_3(3, "离我最近"),
+    PAIR_TYPE_4(4, "用户资料卡片"),
     ;
 
     private int code;

@@ -26,6 +26,11 @@ public interface PairService extends IService<Pair> {
     PairDto getPairList(Page<User> page, Integer type);
 
     /**
+     * 获取配对信息
+     */
+    Pair getPairInfo(Integer userId);
+
+    /**
      * 执行配对
      */
     void pairing(PairingRequest pairingRequest);
@@ -54,4 +59,5 @@ public interface PairService extends IService<Pair> {
      * 解除配对
      */
     void relieve(Integer userId);
+
 }

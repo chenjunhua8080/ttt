@@ -36,7 +36,7 @@
   </select>
 
   <select id="getPairSuccessList" resultType="com.cjh.ttt.entity.Pair">
-    select sender,recipient from pair where data_level = 1 and status = 1
+    select sender,recipient from pair where data_level = 1 and status = 1 order by id desc
   </select>
 
   <select id="getNewPairList" resultType="com.cjh.ttt.dto.UserDto">

@@ -18,7 +18,7 @@
     select *
     from message_detail
     where data_level = 1
-      and message_id = 1
+      and message_id = #{messageId}
     order by id desc
   </select>
 

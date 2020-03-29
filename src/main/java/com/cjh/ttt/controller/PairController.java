@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +41,15 @@ public class PairController {
     public R list(Page<User> page, Integer type) {
         return R.ok(pairService.getPairList(page, type));
     }
+
+    /**
+     * 获取配对信息
+     */
+    @GetMapping("/info/{userId}")
+    public R info(@PathVariable Integer userId) {
+        return R.ok(pairService.getPairInfo(userId));
+    }
+
 
     /**
      * 配对检测
