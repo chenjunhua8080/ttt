@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -190,14 +189,16 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
                     sendSystemMessage(pairUserId, userId);
                 }
             }
-            //配对被拒绝，重新发起配对
-            oldPair.setStatus(PairStatusEnum.WAIT.getCode());
-            oldPair.setUpdateTime(new Date());
-            oldPair.setChannel(channel);
-            oldPair.setSender(userId);
-            oldPair.setRecipient(pairUserId);
-            oldPair.setContent(content);
-            baseMapper.updateById(oldPair);
+            if (PairStatusEnum.FAIL.getCode() == oldPair.getStatus()) {
+                //配对被拒绝，重新发起配对
+                oldPair.setStatus(PairStatusEnum.WAIT.getCode());
+                oldPair.setUpdateTime(new Date());
+                oldPair.setChannel(channel);
+                oldPair.setSender(userId);
+                oldPair.setRecipient(pairUserId);
+                oldPair.setContent(content);
+                baseMapper.updateById(oldPair);
+            }
         } else {
             //建立配对关系
             Pair pair = new Pair();
