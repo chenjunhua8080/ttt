@@ -3,13 +3,14 @@ server:
 spring:
   application:
     name: ttt
-  #默认环境dev
-#  profiles:
-#    active: dev 本地开发不指定
+  #默认环境location
+  profiles:
+    active: location
   cloud:
     #配置中心
     nacos:
       config:
+        #location
         server-addr: http://nacos.springeasy.cn
         namespace: 32d93268-bdb6-40a0-8740-a211f74b9a9f
         group: ${spring.application.name}
