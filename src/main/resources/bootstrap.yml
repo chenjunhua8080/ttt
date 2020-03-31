@@ -4,12 +4,13 @@ spring:
   application:
     name: ttt
   #默认环境dev
-  profiles:
-    active: dev
+#  profiles:
+#    active: dev 本地开发不指定
   cloud:
     #配置中心
     nacos:
       config:
-        server-addr: 127.0.0.1:8048
+        server-addr: http://nacos.springeasy.cn
+        namespace: 32d93268-bdb6-40a0-8740-a211f74b9a9f
         group: ${spring.application.name}
         file-extension: yml
