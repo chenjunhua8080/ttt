@@ -2,13 +2,8 @@ package com.cjh.ttt.request;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
 
 /**
  * 用户表(User)dto
@@ -24,24 +19,19 @@ public class UserUpdateRequest implements Serializable {
     /**
      * 头像
      */
-    @NotBlank(message = "头像不能为空")
+    @Pattern(regexp = "http://images\\.springeasy\\.cn/.*|http://1\\d{2}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}/ttt.*", message = "头像路径错误")
     private String avatar;
     /**
      * 昵称
      */
-    @NotBlank(message = "昵称不能为空")
-    @Length(max = 10, message = "昵称最大长度10")
     private String nickname;
     /**
-     * 性别，字典[sex]
+     * 性别
      */
-    @Min(value = 1, message = "性别选择无效")
-    @Max(value = 2, message = "性别选择无效")
     private Integer sex;
     /**
      * 生日
      */
-    @Past(message = "生日设置不正确")
     private Date birthday;
     /**
      * 手机号

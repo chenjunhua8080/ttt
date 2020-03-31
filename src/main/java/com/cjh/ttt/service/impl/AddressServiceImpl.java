@@ -2,6 +2,7 @@ package com.cjh.ttt.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cjh.ttt.base.map.MapDto;
+import com.cjh.ttt.base.map.MapDto.ResultBean;
 import com.cjh.ttt.base.map.MapDto.ResultBean.AdInfoBean;
 import com.cjh.ttt.base.map.MapService;
 import com.cjh.ttt.base.token.UserContext;
@@ -9,10 +10,9 @@ import com.cjh.ttt.dao.AddressDao;
 import com.cjh.ttt.entity.Address;
 import com.cjh.ttt.request.AddressRequest;
 import com.cjh.ttt.service.AddressService;
-import javax.validation.constraints.NotBlank;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -45,13 +45,26 @@ public class AddressServiceImpl extends ServiceImpl<AddressDao, Address> impleme
         String lng = addressRequest.getLng();
         String lat = addressRequest.getLat();
         MapDto mapDto = mapService.geocoder(lng, lat, 0);
-        Address address = new Address();
-        AdInfoBean adInfo = mapDto.getResult().getAdInfo();
-        BeanUtils.copyProperties(adInfo, address);
-        address.setUserId(userId);
-        address.setLng(lng);
-        address.setLat(lat);
-        address.setDetail(mapDto.getResult().getAddress());
-        baseMapper.updateById(address);
+        ResultBean result = mapDto.getResult();
+        Address address = baseMapper.selectByUserId(userId);
+        AdInfoBean adInfo = result.getAdInfo();
+        if (address == null) {
+            address = new Address();
+            address.setUserId(userId);
+            address.setLng(lng);
+            address.setLat(lat);
+            address.setProvince(adInfo.getProvince());
+            address.setCity(adInfo.getProvince());
+            address.setDetail(result.getAddress());
+            baseMapper.insert(address);
+        } else {
+            address.setLng(lng);
+            address.setLat(lat);
+            address.setProvince(adInfo.getProvince());
+            address.setCity(adInfo.getProvince());
+            address.setDetail(result.getAddress());
+            address.setUpdateTime(new Date());
+            baseMapper.updateById(address);
+        }
     }
 }

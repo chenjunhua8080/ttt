@@ -155,7 +155,7 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
     private IPage<User> selectByAddress(Page<User> page, Integer userId, List<Integer> ids) {
         Address address = addressDao.selectByUserId(userId);
         if (address == null) {
-            throw new ServiceException(ErrorEnum.SEX_NOT_SET);
+            throw new ServiceException(ErrorEnum.ADDRESS_NOT_SET);
         }
         String lng = address.getLng();
         String lat = address.getLat();

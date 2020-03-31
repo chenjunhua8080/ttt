@@ -31,6 +31,7 @@ public enum ErrorEnum {
     ADDRESS_NOT_SET(10009, "请先设置定位"),
     NOT_PAIR(10010, "请先完成配对"),
     RELIEVE_PAIR(10011, "对方已解除配对"),
+    NICKNAME_LENGTH_10(10012, "昵称限制10个字符"),
     ;
 
     private int code;

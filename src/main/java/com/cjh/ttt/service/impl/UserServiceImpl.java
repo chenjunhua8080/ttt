@@ -86,6 +86,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
      * 设置/更新用户地址
      */
     private void setAddress(String lng, String lat, Integer userId) {
+        if (lng == null || lat == null) {
+            return;
+        }
         MapDto mapDto = mapService.geocoder(lng, lat, 0);
         ResultBean result = mapDto.getResult();
         Address address = addressDao.selectByUserId(userId);
@@ -133,6 +136,20 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Override
     public void update(User user) {
+        //校验昵称
+        String nickname = user.getNickname();
+        if (StringUtils.isNotBlank(nickname)) {
+            if (nickname.length() > 10) {
+                throw new ServiceException(ErrorEnum.NICKNAME_LENGTH_10);
+            }
+        }
+        //校验性别
+        Integer sex = user.getSex();
+        if (sex != null) {
+            if (sex != 1 && sex != 2) {
+                throw new ServiceException(ErrorEnum.ERROR_413);
+            }
+        }
         //校验手机
         String phone = user.getPhone();
         if (StringUtils.isNotBlank(phone)) {
@@ -156,9 +173,11 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
         //查询地址
         Address address = addressDao.selectByUserId(userId);
-        AddressDto addressDto = new AddressDto();
-        BeanUtils.copyProperties(address, addressDto);
-        userDto.setAddress(addressDto);
+        if (address != null) {
+            AddressDto addressDto = new AddressDto();
+            BeanUtils.copyProperties(address, addressDto);
+            userDto.setAddress(addressDto);
+        }
 
         return userDto;
     }
