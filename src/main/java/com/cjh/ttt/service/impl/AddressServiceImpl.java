@@ -54,14 +54,14 @@ public class AddressServiceImpl extends ServiceImpl<AddressDao, Address> impleme
             address.setLng(lng);
             address.setLat(lat);
             address.setProvince(adInfo.getProvince());
-            address.setCity(adInfo.getProvince());
+            address.setCity(adInfo.getCity());
             address.setDetail(result.getAddress());
             baseMapper.insert(address);
         } else {
             address.setLng(lng);
             address.setLat(lat);
             address.setProvince(adInfo.getProvince());
-            address.setCity(adInfo.getProvince());
+            address.setCity(adInfo.getCity());
             address.setDetail(result.getAddress());
             address.setUpdateTime(new Date());
             baseMapper.updateById(address);

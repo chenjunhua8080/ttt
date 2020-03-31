@@ -99,14 +99,14 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             address.setLng(lng);
             address.setLat(lat);
             address.setProvince(adInfo.getProvince());
-            address.setCity(adInfo.getProvince());
+            address.setCity(adInfo.getCity());
             address.setDetail(result.getAddress());
             addressDao.insert(address);
         } else {
             address.setLng(lng);
             address.setLat(lat);
             address.setProvince(adInfo.getProvince());
-            address.setCity(adInfo.getProvince());
+            address.setCity(adInfo.getCity());
             address.setDetail(result.getAddress());
             address.setUpdateTime(new Date());
             addressDao.updateById(address);
