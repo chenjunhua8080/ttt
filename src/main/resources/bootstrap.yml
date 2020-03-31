@@ -9,9 +9,13 @@ spring:
   cloud:
     #配置中心
     nacos:
+      #location
       config:
-        #location
         server-addr: http://nacos.springeasy.cn
         namespace: 32d93268-bdb6-40a0-8740-a211f74b9a9f
         group: ${spring.application.name}
         file-extension: yml
+      #服务发现
+      discovery:
+        server-addr: http://nacos.springeasy.cn
+        namespace: 32d93268-bdb6-40a0-8740-a211f74b9a9f
