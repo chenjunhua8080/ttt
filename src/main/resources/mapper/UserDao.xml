@@ -29,7 +29,6 @@
            select *
            from user
            where data_level = 1
-             and sex = #{sex}
              and birthday = #{birthday}
           <if test="ids != null and ids.size() > 0">
             and id not in
@@ -37,6 +36,9 @@
               #{item}
             </foreach>
           </if>
+           <if test="sex != null">
+             and sex = #{sex}
+           </if>
            order by id
          ) tt
   </select>
@@ -47,17 +49,20 @@
       select t.*
       from user t
       where t.data_level = 1
+      and t.birthday != #{birthday}
       and (
         date_format(t.birthday, 'MM-dd') = date_format(#{birthday}, 'MM-dd')
           or
         date_format(t.birthday, 'yyyy') = date_format(#{birthday}, 'yyyy')
       )
-      and t.sex = #{sex}
       <if test="ids != null and ids.size() > 0">
         and t.id not in
         <foreach collection="ids" separator="," open="(" close=")" item="item">
           #{item}
         </foreach>
+      </if>
+      <if test="sex != null">
+        and sex = #{sex}
       </if>
      order by birthday
     ) tt

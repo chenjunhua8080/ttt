@@ -86,10 +86,10 @@ public class PairServiceImpl extends ServiceImpl<PairDao, Pair> implements PairS
         assert pairType != null;
         switch (pairType) {
             case PAIR_TYPE_1:
-                pages = userDao.selectBySexAndBirthday(page, sex, user.getBirthday(), ids);
+                pages = userDao.selectBySexAndBirthday(page, null, user.getBirthday(), ids);
                 break;
             case PAIR_TYPE_2:
-                pages = userDao.selectBySexAndNearByBirthday(page, sex, user.getBirthday(), ids);
+                pages = userDao.selectBySexAndNearByBirthday(page, null, user.getBirthday(), ids);
                 break;
             case PAIR_TYPE_3:
                 pages = selectByAddress(page, userId, ids);

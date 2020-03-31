@@ -43,7 +43,7 @@ public interface UserDao extends BaseMapper<User> {
      * 根据性别、生日查询，10条
      */
     IPage<User> selectBySexAndBirthday(Page<User> page,
-        @Param("sex") int sex,
+        @Param("sex") Integer sex,
         @Param("birthday") Date birthday,
         @Param("ids") List<Integer> ids);
 
@@ -51,7 +51,7 @@ public interface UserDao extends BaseMapper<User> {
      * 根据性别、生日查询，10条
      */
     IPage<User> selectBySexAndNearByBirthday(Page<User> page,
-        @Param("sex") int sex,
+        @Param("sex") Integer sex,
         @Param("birthday") Date birthday,
         @Param("ids") List<Integer> ids);
 
