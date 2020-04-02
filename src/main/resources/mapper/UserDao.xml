@@ -76,7 +76,6 @@
                ) * 6371393 distance
       from user u
       right join address a on u.id = a.user_id and a.id is not null
-      left join pair p on u.id = p.sender
       <if test="ids != null and ids.size() > 0">
         where u.id not in
         <foreach collection="ids" separator="," open="(" close=")" item="item">
