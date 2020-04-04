@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 /**
  * token拦截器
@@ -82,9 +83,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
             "/user/login.*",
             "/user/logout.*",
             "/test.*",
-            "/error.*",
-            "/",
-            "/favicon.ico"
+            "/error"
         };
         boolean match = false;
         for (String item : strings) {
