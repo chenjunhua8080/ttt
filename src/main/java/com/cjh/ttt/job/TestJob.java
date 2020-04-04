@@ -1,6 +1,5 @@
 package com.cjh.ttt.job;
 
-import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,7 +18,7 @@ public class TestJob {
 
     @Scheduled(cron = "${job.test}")
     public void test() {
-        System.out.println("test job: " + new Date());
+        log.info("[---- test job ----]");
     }
 
 }

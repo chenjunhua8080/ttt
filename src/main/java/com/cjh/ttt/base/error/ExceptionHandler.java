@@ -27,7 +27,9 @@ public class ExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(ServiceException.class)
     public R handleApiException(ServiceException e) {
-        if (ErrorEnum.TOKEN_NULL.getCode() != e.getCode()) {
+        if (ErrorEnum.TOKEN_NULL.getCode() == e.getCode()) {
+            log.error(e.getMessage());
+        } else {
             log.error(e.getMessage(), e);
         }
         return R.failed(new IErrorCode() {
