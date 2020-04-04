@@ -6,6 +6,7 @@ import com.cjh.ttt.base.redis.RedisKeys;
 import com.cjh.ttt.base.redis.RedisService;
 import com.cjh.ttt.entity.User;
 import com.cjh.ttt.service.UserService;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 /**
  * token拦截器
@@ -31,8 +33,12 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
     private UserService userService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-        throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        //如果是对应controller的url，handler是HandlerMethod
+        //否则是ResourceHttpRequestHandler
+        if (handler instanceof ResourceHttpRequestHandler) {
+            return true;
+        }
         //跳过不拦截的url
         if (continueUrl(request)) {
             return true;
@@ -67,8 +73,8 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
-        throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+        Exception ex) {
         //清除
         UserContext.clearUser();
     }
@@ -82,9 +88,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
             "/user/login.*",
             "/user/logout.*",
             "/test.*",
-            "/error.*",
-            "/",
-            "/favicon.ico"
+            "/error"
         };
         boolean match = false;
         for (String item : strings) {
@@ -92,7 +96,10 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
                 match = true;
             }
         }
-        log.info("〓〓〓〓 {} : {} 〓〓〓〓 {} 〓〓〓〓", url, match, new Date());
+        log.info("〓〓〓〓 {} 〓〓 {} : {}",
+            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()),
+            match,
+            url);
         return match;
     }
 
