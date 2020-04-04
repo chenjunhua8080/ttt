@@ -1,4 +1,3 @@
-
 package com.cjh.ttt.base.error;
 
 import com.baomidou.mybatisplus.extension.api.IErrorCode;
@@ -28,7 +27,9 @@ public class ExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(ServiceException.class)
     public R handleApiException(ServiceException e) {
-        log.error(e.getMessage(), e);
+        if (ErrorEnum.TOKEN_NULL.getCode() != e.getCode()) {
+            log.error(e.getMessage(), e);
+        }
         return R.failed(new IErrorCode() {
             @Override
             public long getCode() {

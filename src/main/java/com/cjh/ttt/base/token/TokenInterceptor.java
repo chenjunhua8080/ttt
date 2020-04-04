@@ -6,10 +6,12 @@ import com.cjh.ttt.base.redis.RedisKeys;
 import com.cjh.ttt.base.redis.RedisService;
 import com.cjh.ttt.entity.User;
 import com.cjh.ttt.service.UserService;
+import java.util.Date;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -22,6 +24,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  */
 @Component
 @AllArgsConstructor
+@Slf4j
 public class TokenInterceptor extends HandlerInterceptorAdapter {
 
     private RedisService redisService;
@@ -80,6 +83,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
             "/user/logout.*",
             "/test.*",
             "/error.*",
+            "/",
             "/favicon.ico"
         };
         boolean match = false;
@@ -88,7 +92,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
                 match = true;
             }
         }
-        System.err.println("******************" + url + "************" + match);
+        log.info("〓〓〓〓 {} : {} 〓〓〓〓 {} 〓〓〓〓", url, match, new Date());
         return match;
     }
 
