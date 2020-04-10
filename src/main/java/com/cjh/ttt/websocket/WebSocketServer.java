@@ -3,6 +3,7 @@ package com.cjh.ttt.websocket;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cjh.ttt.base.token.UserContext;
 import com.cjh.ttt.base.util.JsonUtil;
 import com.cjh.ttt.base.util.SpringContextUtils;
 import com.cjh.ttt.dao.UserDao;
@@ -30,7 +31,7 @@ import org.springframework.stereotype.Component;
  * @author cjh
  * @date 2020/3/27
  */
-@ServerEndpoint(value = "/websocket/message/{userId}", encoders = {WebSocketEncoder.class})
+@ServerEndpoint(value = "/websocket/msg/{userId}", encoders = {WebSocketEncoder.class})
 @Component
 @Slf4j
 public class WebSocketServer {
@@ -39,8 +40,9 @@ public class WebSocketServer {
     private MessageService messageService;
 
     {
-        messageService = SpringContextUtils.getBean("messageService", MessageService.class);
         userDao = SpringContextUtils.getBean("userDao", UserDao.class);
+        messageService = SpringContextUtils.getBean("messageService", MessageService.class);
+        log.info("注入bean: {},{}", userDao, messageService);
     }
 
     /**
@@ -49,6 +51,7 @@ public class WebSocketServer {
     private static Map<String, Session> webSocketServerMap = new ConcurrentHashMap<>();
 
     /**
+     * 1
      * 当前用户Session
      */
     private Session session;
@@ -65,6 +68,7 @@ public class WebSocketServer {
             //为空则关闭
             session.close();
         } else {
+            UserContext.setUser(user);
             //建立连接
             this.session = session;
             webSocketServerMap.put(userId.toString(), this.session);
@@ -91,15 +95,13 @@ public class WebSocketServer {
 
     /**
      * 收到客户端消息后调用的方法
-     * <p>
-     * http://yapi.qingzu.com.cn/project/9/interface/api/573
      *
      * @param message 客户端发送过来的消息
      */
     @OnMessage
     public void onMessage(String message, @PathParam("userId") Integer userId) throws Exception {
         Map<String, Object> map = new HashMap<>();
-        Session thisSession = webSocketServerMap.get(userId);
+        Session thisSession = webSocketServerMap.get(userId.toString());
         switch (message) {
             case "getMessageList":
                 //消息刷新
@@ -145,8 +147,7 @@ public class WebSocketServer {
      */
     @OnError
     public void onError(Session session, Throwable error) {
-        System.out.println("发生错误");
-        error.printStackTrace();
+        log.error("session: {}, error: ", session.getId(), error);
     }
 
 

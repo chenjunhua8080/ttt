@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <springProperty name="springAppName" scope="context" source="spring.application.name"/>
+    <springProperty name="active" scope="context" source="spring.profiles.active"/>
+    <property name="logPath" value="/root/app"/>
+    <property name="logFile" value="${springAppName}.log"/>
+
+    <!-- 定义 -->
+    <appender class="ch.qos.logback.core.rolling.RollingFileAppender" name="FILE-OUT">
+        <File>${logPath}/${active}/${logFile}</File>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %-10contextName{10} --- [%-10thread{10}] %logger{36} : %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--按天压缩-->
+            <FileNamePattern>${logPath}/${active}/old/${logFile}.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+            <!-- 保存30天的数据-->
+            <maxHistory>30</maxHistory>
+            <!--最多保留文件大小-->
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE-OUT"/>
+    </root>
+
+    <springProfile name="location">
+        <logger level="INFO" name="org.springframework.web"/>
+        <logger level="INFO" name="org.springboot.sample"/>
+        <logger level="DEBUG" name="om.cjh.ttt"/>
+    </springProfile>
+
+    <springProfile name="dev">
+        <logger level="INFO" name="org.springframework.web"/>
+        <logger level="INFO" name="org.springboot.sample"/>
+        <logger level="DEBUG" name="com.cjh.ttt"/>
+    </springProfile>
+
+    <springProfile name="online">
+        <logger level="ERROR" name="org.springframework.web"/>
+        <logger level="ERROR" name="org.springboot.sample"/>
+        <logger level="INFO" name="com.cjh.ttt"/>
+    </springProfile>
+
+
+</configuration>

@@ -88,6 +88,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
             "/user/login.*",
             "/user/logout.*",
             "/test.*",
+//            "/websocket.*",
             "/error"
         };
         boolean match = false;
