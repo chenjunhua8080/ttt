@@ -31,4 +31,5 @@ pipeline {
                sh 'make publish'
            }
        }
+    }
  }
