@@ -23,7 +23,7 @@ pipeline {
            }
            steps {
                sh '''
-export BUILD_ID=dontKillMe
+JENKINS_NODE_COOKIE=dontkillme
 logPath="/home/logs/app/dev/"
 jenkinsPath=$WORKSPACE/target
 echo jenkinsPath=$jenkinsPath
