@@ -15,20 +15,29 @@ pipeline {
                 sh 'mvn clean package -Dmaven.test.skip=true'
             }
        }
-       stage('find') {
-            steps {
-                sh 'make'
-                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
-            }
-       }
-       stage('Deploy') {
+       stage('deploy') {
            when {
              expression {
                currentBuild.result == null || currentBuild.result == 'SUCCESS'
              }
            }
            steps {
-               sh 'make publish'
+               sh '''
+logPath="/home/logs/app/dev/"
+jenkinsPath=$WORKSPACE/target
+echo jenkinsPath=$jenkinsPath
+cd $jenkinsPath
+jarFile=$(find $jenkinsPath |grep ^.*.jar$)
+jarFile=${jarFile##*/}
+echo jarFile=$jarFile
+port=8058
+echo port=$port
+pid=$(netstat -nlp | grep $port |awk '{print $7}'|awk -F "/" '{print $1}')
+echo pid=$pid
+if [ -n "$pid" ]; then kill -9 $pid; echo kill pid=$pid; fi
+if [ ! -d "$logPath" ]; then echo "create logPath"; mkdir -p $logPath; fi
+BUILD_ID=dontKillMe nohup java  -Dspring.profiles.active=dev -jar $jenkinsPath/$jarFile > $logPath/ttt.log 2>&1 &
+echo end'''
            }
        }
     }
