@@ -35,7 +35,7 @@ echo port=$port
 pid=$(netstat -nltp | grep $port |awk '{print $7}'|awk -F "/" '{print $1}')
 echo pid=$pid
 if [ -n "$pid" ]; then kill -9 $pid; echo kill pid=$pid; fi
-nohup java  -Dspring.profiles.active=dev -jar $jenkinsPath/$jarFile > /dev/null 2>&1 &
+nohup java -Xms512m -Xmx512m -Xmn256m -Xss256k  -Dspring.profiles.active=dev -jar $jenkinsPath/$jarFile > /dev/null 2>&1 &
 echo end'''
            }
        }
