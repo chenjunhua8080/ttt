@@ -9,7 +9,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import sun.misc.BASE64Encoder;
+import org.springframework.util.Base64Utils;
 
 /**
  * 图片工具类
@@ -28,14 +28,14 @@ public class ImgUtil {
         } catch (Exception e) {
             log.info("url: {}", url);
             log.error("img2base64转换失败: {}", e.getMessage());
+            return "";
         }
         String imageString = "data:image/jpeg;base64,";
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
             ImageIO.write(image, type, bos);
             byte[] imageBytes = bos.toByteArray();
-            BASE64Encoder encoder = new BASE64Encoder();
-            imageString += encoder.encode(imageBytes);
+            imageString += Base64Utils.encodeToString(imageBytes);
             bos.close();
         } catch (IOException e) {
             log.error("img2base64转换失败: {}", e.getMessage());
