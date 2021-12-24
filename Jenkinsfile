@@ -24,7 +24,6 @@ pipeline {
            steps {
                sh '''
 JENKINS_NODE_COOKIE=dontkillme
-logPath="/home/logs/app/dev/"
 jenkinsPath=$WORKSPACE/target
 echo jenkinsPath=$jenkinsPath
 cd $jenkinsPath
@@ -33,13 +32,13 @@ jarFile=${jarFile##*/}
 echo jarFile=$jarFile
 port=8058
 echo port=$port
-pid=$(netstat -nlp | grep $port |awk '{print $7}'|awk -F "/" '{print $1}')
+pid=$(netstat -nltp | grep $port |awk '{print $7}'|awk -F "/" '{print $1}')
 echo pid=$pid
 if [ -n "$pid" ]; then kill -9 $pid; echo kill pid=$pid; fi
-if [ ! -d "$logPath" ]; then echo "create logPath"; mkdir -p $logPath; fi
-nohup java  -Dspring.profiles.active=dev -jar $jenkinsPath/$jarFile > $logPath/ttt.log 2>&1 &
+nohup java  -Dspring.profiles.active=dev -jar $jenkinsPath/$jarFile > /dev/null 2>&1 &
 echo end'''
            }
        }
     }
  }
+//查找端口也可以用：lsof -t -i tcp:8056
