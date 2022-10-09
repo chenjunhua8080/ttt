@@ -1,6 +1,6 @@
 package com.cjh.ttt.service.impl;
 
-import com.alibaba.nacos.common.util.UuidUtils;
+import com.alibaba.nacos.common.utils.UuidUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cjh.ttt.base.error.ErrorEnum;
 import com.cjh.ttt.base.error.ServiceException;
@@ -25,7 +25,7 @@ import com.cjh.ttt.toutiao.TouTiaoApiService;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

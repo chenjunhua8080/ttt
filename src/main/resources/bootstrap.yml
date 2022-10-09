@@ -11,11 +11,11 @@ spring:
     nacos:
       #location
       config:
-        server-addr: http://nacos.springeasy.cn
+        server-addr: http://base.springeasy.cn:8048
         namespace: 32d93268-bdb6-40a0-8740-a211f74b9a9f
         group: ${spring.application.name}
         file-extension: yml
       #服务发现
       discovery:
-        server-addr: http://nacos.springeasy.cn
+        server-addr: http://base.springeasy.cn:8048
         namespace: 32d93268-bdb6-40a0-8740-a211f74b9a9f
