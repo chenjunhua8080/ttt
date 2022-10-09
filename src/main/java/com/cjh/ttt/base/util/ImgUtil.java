@@ -1,5 +1,6 @@
 package com.cjh.ttt.base.util;
 
+import cn.hutool.core.codec.Base64Encoder;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -9,7 +10,6 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.util.Base64Utils;
 
 /**
  * 图片工具类
@@ -28,14 +28,13 @@ public class ImgUtil {
         } catch (Exception e) {
             log.info("url: {}", url);
             log.error("img2base64转换失败: {}", e.getMessage());
-            return "";
         }
         String imageString = "data:image/jpeg;base64,";
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
             ImageIO.write(image, type, bos);
             byte[] imageBytes = bos.toByteArray();
-            imageString += Base64Utils.encodeToString(imageBytes);
+            imageString += Base64Encoder.encode(imageBytes);
             bos.close();
         } catch (IOException e) {
             log.error("img2base64转换失败: {}", e.getMessage());
