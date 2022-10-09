@@ -93,8 +93,7 @@
     <!-- 升级springboot后需要添加依赖-->
     <dependency>
       <artifactId>hibernate-validator</artifactId>
-      <groupId>org.hibernate</groupId>
-      <version>7.0.1.Final</version>
+      <groupId>org.hibernate.validator</groupId>
     </dependency>
 
     <!-- JSON -->
